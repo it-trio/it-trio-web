@@ -13,4 +13,21 @@ const blog = defineCollection({
 	}),
 });
 
-export const collections = { blog };
+
+const episode = defineCollection({
+	type: 'data',
+	schema: z.object({
+		guid: z.string(),
+		title: z.string(),
+		description: z.string(),
+		number: z.number(),
+		season: z.number(),
+		pubDate: z.coerce.date(),
+		image: z.string(),
+		duration: z.string(),
+		url: z.string(),
+	}),
+});
+
+
+export const collections = { blog, episode };
