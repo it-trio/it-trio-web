@@ -25,6 +25,7 @@ const episode = defineCollection({
     image: z.string(),
     duration: z.string(),
     url: z.string(),
+    episodeType: z.string(),
   }),
 });
 
