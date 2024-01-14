@@ -1,64 +1,63 @@
 ---
-import FormattedDate from '../components/FormattedDate.astro';
+import FormattedDate from "../components/FormattedDate.astro";
 
 interface Props {
- title: string;
- href: string;
-	imageSrc: string;
- date: Date;
- description: string;
+  title: string;
+  href: string;
+  imageSrc: string;
+  date: Date;
+  description: string;
 }
 
-const { title, href, imageSrc, date,description } = Astro.props;
+const { title, href, imageSrc, date, description } = Astro.props;
 ---
 
 <a href={href} class="item">
- <img class="image" width=150 height=150 src={ imageSrc } alt=''>
-	<div class="info">
-		<time class="date" datetime={date.toISOString()}>
-			{
-				date.toLocaleDateString('ja-JP', {
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric',
-				})
-			}
-		</time>
-		<p class="title">{title}</p>
-		<p class="description">{ description }</p>
-	</div>
+  <img class="image" width="150" height="150" src={imageSrc} alt="" />
+  <div class="info">
+    <time class="date" datetime={date.toISOString()}>
+      {
+        date.toLocaleDateString("ja-JP", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      }
+    </time>
+    <p class="title">{title}</p>
+    <p class="description">{description}</p>
+  </div>
 </a>
 
-
 <style>
-		.item {
-				display: flex;
-				text-decoration: none;
-				color: rgb(var(--black));
-				gap: 16px;
-		}
-		.image {
-				border-radius: 4px;
-				flex-shrink: 0;
-				width: 150px;
-				height: 150px;
-		}
-		.info {
-			flex-shrink: 1;
-		}
-		.date{
-			font-size: 0.8rem;
-			font-weight: 400;
-			margin: 0;
-		}
-		.title	{
-			font-size: 1.2rem;
-			font-weight: 600;
-			margin: 0;
-		}
-		.description {
-			margin: 0;
-			font-size: 1rem;
-			font-weight: 400;
-		}
+  .item {
+    display: flex;
+    text-decoration: none;
+    color: rgb(var(--black));
+    gap: 16px;
+  }
+  .image {
+    border-radius: 4px;
+    flex-shrink: 0;
+    width: 150px;
+    height: 150px;
+  }
+  .info {
+    flex-shrink: 1;
+  }
+  .date {
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin: 0;
+  }
+  .title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  .description {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+  }
 </style>
