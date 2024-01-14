@@ -12,8 +12,14 @@ interface Props {
 const { title, href, imageSrc, date, description } = Astro.props;
 ---
 
-<a href={href} class="item">
-  <img class="image" width="150" height="150" src={imageSrc} alt="" />
+<a href={href} class="container">
+  <img
+    class="image"
+    width="150"
+    height="150"
+    src={imageSrc}
+    alt=`${title}のサムネイル`
+  />
   <div class="info">
     <time class="date" datetime={date.toISOString()}>
       {
@@ -25,27 +31,34 @@ const { title, href, imageSrc, date, description } = Astro.props;
       }
     </time>
     <p class="title">{title}</p>
-    <p class="description">{description}</p>
+    <p class="description">{description.replace(/\n+/g, "\n")}</p>
   </div>
 </a>
 
 <style>
-  .item {
-    display: flex;
+  .container {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 16px;
     text-decoration: none;
     color: rgb(var(--black));
-    gap: 16px;
+    width: 100%;
+    @media (max-width: 750px) {
+      grid-template-columns: 60px 1fr;
+    }
+    /* … */
   }
   .image {
     border-radius: 4px;
     flex-shrink: 0;
-    width: 150px;
-    height: 150px;
+    width: 100%;
+    height: auto;
   }
   .info {
     flex-shrink: 1;
   }
   .date {
+    display: block;
     font-size: 0.8rem;
     font-weight: 400;
     margin: 0;
@@ -59,5 +72,9 @@ const { title, href, imageSrc, date, description } = Astro.props;
     margin: 0;
     font-size: 1rem;
     font-weight: 400;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
   }
 </style>

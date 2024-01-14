@@ -83,6 +83,8 @@ a {
 }
 p {
   margin: 0;
+  white-space: pre-line;
+  word-break: break-all;
 }
 a:hover {
   color: var(--accent);
