@@ -1,0 +1,71 @@
+---
+import { Image } from "astro:assets";
+import {
+  SPOTIFY_SHOW_LINK,
+  APPLE_PODCAST_SHOW_LINK,
+  AMAZON_MUSIC_SHOW_LINK,
+  RSS_FEED_URL,
+} from "../consts";
+import listenOnSpotify from "../images/listen-on-spotify.png";
+import listenOnApplePodcast from "../images/listen-on-apple-podcast.svg";
+import listenOnAmazonMusic from "../images/listen-on-amazon-music.png";
+import rss from "../images/rss.png";
+---
+
+<div>
+  <ul class="list">
+    <li class="item">
+      <a href={SPOTIFY_SHOW_LINK} target="_blank">
+        <Image class="image" src={listenOnSpotify} alt="Listen on Spotify" />
+      </a>
+    </li>
+    <li class="item">
+      <a href={APPLE_PODCAST_SHOW_LINK} target="_blank">
+        <Image
+          class="image"
+          src={listenOnApplePodcast}
+          alt="Listen on Apple Podcast"
+        />
+      </a>
+    </li>
+    <li class="item">
+      <a href={AMAZON_MUSIC_SHOW_LINK} target="_blank">
+        <Image
+          class="image"
+          src={listenOnAmazonMusic}
+          alt="Listen on Amazon Music"
+        />
+      </a>
+    </li>
+    <li class="item rss">
+      <a href={RSS_FEED_URL} target="_blank">
+        <Image class="image" src={rss} alt="RSS Feed" />
+      </a>
+    </li>
+  </ul>
+</div>
+
+<style>
+  .list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+
+    @media (max-width: 720px) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .item {
+    max-height: 40px;
+  }
+  .rss {
+    display: flex;
+    justify-content: center;
+  }
+  .image {
+    height: 100%;
+    width: auto;
+  }
+</style>

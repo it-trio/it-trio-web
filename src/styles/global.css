@@ -54,7 +54,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 0 0 0.5rem 0;
+  margin: 0;
   color: rgb(var(--black));
   line-height: 1.2;
 }
@@ -89,20 +89,12 @@ p {
 a:hover {
   color: var(--accent);
 }
-textarea {
-  width: 100%;
-  font-size: 16px;
-}
-input {
-  font-size: 16px;
-}
-table {
-  width: 100%;
-}
 img {
   max-width: 100%;
   height: auto;
-  border-radius: 8px;
+}
+ul {
+  list-style-type: none;
 }
 code {
   padding: 2px 5px;
@@ -133,22 +125,4 @@ hr {
   main {
     padding: 1em;
   }
-}
-
-.sr-only {
-  border: 0;
-  padding: 0;
-  margin: 0;
-  position: absolute !important;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-  clip: rect(1px 1px 1px 1px);
-  /* maybe deprecated but we need to support legacy browsers */
-  clip: rect(1px, 1px, 1px, 1px);
-  /* modern browsers, clip-path works inwards from each corner */
-  clip-path: inset(50%);
-  /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
-  white-space: nowrap;
 }

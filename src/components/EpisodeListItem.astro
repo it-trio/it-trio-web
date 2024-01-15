@@ -1,6 +1,4 @@
 ---
-import FormattedDate from "../components/FormattedDate.astro";
-
 interface Props {
   title: string;
   href: string;
@@ -43,10 +41,9 @@ const { title, href, imageSrc, date, description } = Astro.props;
     text-decoration: none;
     color: rgb(var(--black));
     width: 100%;
-    @media (max-width: 750px) {
+    @media (max-width: 720px) {
       grid-template-columns: 60px 1fr;
     }
-    /* … */
   }
   .image {
     border-radius: 4px;
