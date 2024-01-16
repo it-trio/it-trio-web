@@ -1,0 +1,71 @@
+---
+import { Image } from "astro:assets";
+import ogura from "../../images/ogura.jpg";
+import cheese from "../../images/cheese.jpg";
+import nabe from "../../images/nabe.jpg";
+---
+
+<div>
+  <h2>プロフィール</h2>
+  <div class="content">
+    <div class="profile">
+      <Image class="image" src={ogura} alt="おぐらくんの似顔絵" />
+      <p class="name">おぐらくん</p>
+      <p class="explain">
+        カナダにいる。
+        エンジニア歴はアルバイトを入れると7年くらいで、色々考えた結果バンクーバーに移住して就職することにした。
+        ビザの関係で学校に通っているので、最近はあんまり働いていない。
+        ITトリオの日常の編集から更新まで、色々やっている。
+      </p>
+    </div>
+    <div class="profile">
+      <Image class="image" src={cheese} alt="ちーずの似顔絵" />
+      <p class="name">ちーず</p>
+      <p class="explain">
+        名古屋にいる。
+        元デザイナーで、某お金関係の会社でフロントエンジニアをやっている。
+        人気者なので、カレンダーのすべてが予定で埋まりがち。
+        今年の抱負は「#丁寧な暮らし」
+      </p>
+    </div>
+    <div class="profile">
+      <Image class="image" src={nabe} alt="なべちゃんの似顔絵" />
+      <p class="name">なべちゃん</p>
+      <p class="explain">
+        愛知にいる。
+        フルスタックエンジニアとして働いていていて、最近はマネージャー業もしていおり、色々大変そう。
+        動画投稿が趣味で、YouTubeを頑張っていて、最近はゲーム実況も始めた。
+      </p>
+    </div>
+  </div>
+</div>
+
+<style>
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+
+    @media (max-width: 720px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  .profile {
+    text-align: center;
+  }
+  .image {
+    width: 180px;
+    height: 180px;
+    border-radius: 100%;
+  }
+  .name {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .explain {
+    font-size: 14px;
+    text-align: left;
+  }
+</style>
