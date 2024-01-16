@@ -5,9 +5,12 @@ interface Props {
   imageSrc: string;
   date: Date;
   description: string;
+  season: number;
+  episodeNumber: number;
 }
 
-const { title, href, imageSrc, date, description } = Astro.props;
+const { title, href, imageSrc, date, description, season, episodeNumber } =
+  Astro.props;
 ---
 
 <a href={href} class="container">
@@ -19,60 +22,67 @@ const { title, href, imageSrc, date, description } = Astro.props;
     alt=`${title}のサムネイル`
   />
   <div class="info">
-    <time class="date" datetime={date.toISOString()}>
-      {
-        date.toLocaleDateString("ja-JP", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
-      }
-    </time>
+    <p class="date">
+      <time class="time" datetime={date.toISOString()}>
+        {
+          date.toLocaleDateString("ja-JP", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        }
+      </time> / S{season}・EP{episodeNumber}
+    </p>
     <p class="title">{title}</p>
-    <p class="description">{description.replace(/\n+/g, "\n")}</p>
+    <p class="description">
+      {description.replace(/^\n+/, "").replace(/\n+/g, "\n")}
+    </p>
   </div>
-</a>
 
-<style>
-  .container {
-    display: grid;
-    grid-template-columns: 150px 1fr;
-    gap: 16px;
-    text-decoration: none;
-    color: rgb(var(--black));
-    width: 100%;
-    @media (max-width: 720px) {
-      grid-template-columns: 60px 1fr;
+  <style>
+    .container {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 16px;
+      text-decoration: none;
+      color: rgb(var(--black));
+      width: 100%;
+      @media (max-width: 720px) {
+        grid-template-columns: 60px 1fr;
+      }
     }
-  }
-  .image {
-    border-radius: 4px;
-    flex-shrink: 0;
-    width: 100%;
-    height: auto;
-  }
-  .info {
-    flex-shrink: 1;
-  }
-  .date {
-    display: block;
-    font-size: 0.8rem;
-    font-weight: 400;
-    line-height: 1;
-    margin: 0;
-  }
-  .title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin: 0;
-  }
-  .description {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 400;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-  }
-</style>
+    .image {
+      border-radius: 4px;
+      flex-shrink: 0;
+      width: 100%;
+      height: auto;
+    }
+    .info {
+      flex-shrink: 1;
+    }
+    .date {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      line-height: 1;
+      margin: 0;
+    }
+    .time {
+      display: inline;
+    }
+    .title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    .description {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 400;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+    }
+  </style>
+</a>

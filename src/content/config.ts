@@ -24,6 +24,7 @@ const episode = defineCollection({
     pubDate: z.coerce.date(),
     image: z.string(),
     duration: z.string(),
+    summary: z.string(),
     url: z.string(),
     episodeType: z.string(),
   }),

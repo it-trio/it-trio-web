@@ -12,7 +12,7 @@ const episodes = (await getCollection("episode")).sort(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="ja">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <style>
@@ -48,7 +48,9 @@ const episodes = (await getCollection("episode")).sort(
                   href={`/it-trio-web/episode/${episode.data.guid}/`}
                   imageSrc={episode.data.image}
                   date={episode.data.pubDate}
-                  description={episode.data.description}
+                  description={episode.data.summary}
+                  season={episode.data.season}
+                  episodeNumber={episode.data.number}
                 />
               </li>
             ))
