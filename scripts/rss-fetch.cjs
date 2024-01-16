@@ -6,7 +6,6 @@ let parser = new Parser();
 
 (async () => {
   let feed = await parser.parseURL(RSS_URL);
-  console.log(feed.title);
 
   feed.items.forEach((item) => {
     const guid = item.guid.replace("gid://art19-episode-locator/V0/", "");
@@ -19,6 +18,7 @@ let parser = new Parser();
       pubDate: item.isoDate,
       image: item.itunes.image,
       duration: item.itunes.duration,
+      summary: item.itunes.summary,
       url: item.enclosure.url,
       episodeType: "full",
     };
