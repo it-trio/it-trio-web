@@ -7,7 +7,17 @@ import FormattedDate from "../components/FormattedDate.astro";
 
 type Props = CollectionEntry<"episode">["data"];
 
-const { title, description, pubDate, image, url } = Astro.props;
+function extractUUID(url: string): string | null {
+  // Regular expression for UUID v4
+  const uuidRegex =
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/;
+  const match = url.match(uuidRegex);
+
+  return match ? match[0] : null;
+}
+
+const uuid = extractUUID(Astro.props.url);
+const { title, description, pubDate, url } = Astro.props;
 ---
 
 <html lang="en">
@@ -16,11 +26,12 @@ const { title, description, pubDate, image, url } = Astro.props;
     <style>
       main {
         width: calc(100% - 2em);
-        max-width: 100%;
-        margin: 0;
+        max-width: 1020px;
+        padding-top: 2em;
       }
-      .hero-image {
-        width: 100%;
+      .player {
+        display: grid;
+        place-items: center;
       }
       .hero-image img {
         display: block;
@@ -29,55 +40,77 @@ const { title, description, pubDate, image, url } = Astro.props;
         box-shadow: var(--box-shadow);
       }
       .prose {
-        width: 720px;
         max-width: calc(100% - 2em);
         margin: auto;
         padding: 1em;
         color: rgb(var(--gray-dark));
       }
-      .title {
-        margin-bottom: 1em;
-        padding: 1em 0;
-        text-align: center;
-        line-height: 1;
-      }
-      .title h1 {
-        margin: 0 0 0.5em 0;
-      }
       .date {
-        margin-bottom: 0.5em;
+        text-align: center;
         color: rgb(var(--gray));
       }
-      .last-updated-on {
-        font-style: italic;
+      .title {
+        text-align: center;
+        line-height: 1.2;
+        font-size: 1.5em;
+        margin-top: 0.5em;
+      }
+      .border {
+        margin-top: 2em;
+      }
+      .audio {
+        margin: auto;
       }
     </style>
+    <link
+      href="https://web-player.art19.com/assets/current.css"
+      media="screen"
+      rel="stylesheet"
+      type="text/css"
+    />
   </head>
-
   <body>
     <Header />
     <main>
       <article>
-        <div class="hero-image">
-          <img width={300} height={300} src={image} alt="" />
-        </div>
-        <div class="prose">
-          <div class="title">
-            <div class="date">
-              <FormattedDate date={pubDate} />
-            </div>
-            <h1>{title}</h1>
-            <hr />
-          </div>
-          <div>
-            <audio src={url} controls></audio>
-          </div>
-          <div>
-            <p>{description}</p>
-          </div>
+        <div class="player">
+          {
+            uuid !== null ? (
+              <div
+                class="art19-web-player awp-artwork awp-theme-dark-custom"
+                data-episode-id={uuid}
+                data-primary-color="#2fb9f4"
+              />
+            ) : (
+              <>
+                <div class="hero-image">
+                  <img
+                    src="/images/hero.jpg"
+                    alt="The Art of Product Podcast"
+                  />
+                </div>
+                <div>
+                  <audio class="audio" src={url} controls />
+                </div>
+              </>
+            )
+          }
         </div>
       </article>
+      <div class="prose">
+        <div class="date">
+          <FormattedDate date={pubDate} />
+        </div>
+        <h1 class="title">{title}</h1>
+        <hr class="border" />
+        <div>
+          <p>{description}</p>
+        </div>
+      </div>
     </main>
     <Footer />
+    <script
+      src="https://web-player.art19.com/assets/current.js"
+      type="text/javascript"></script>
   </body>
 </html>
