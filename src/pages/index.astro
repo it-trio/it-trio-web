@@ -13,6 +13,12 @@ import AppealEpisodes from "../components/top/AppealEpisodes.astro";
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <link
+      href="https://web-player.art19.com/assets/current.css"
+      media="screen"
+      rel="stylesheet"
+      type="text/css"
+    />
   </head>
   <body>
     <Header title={SITE_TITLE} />
@@ -30,5 +36,8 @@ import AppealEpisodes from "../components/top/AppealEpisodes.astro";
       <AppealEpisodes />
     </main>
     <Footer />
+    <script
+      src="https://web-player.art19.com/assets/current.js"
+      type="text/javascript"></script>
   </body>
 </html>

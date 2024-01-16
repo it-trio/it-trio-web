@@ -1,13 +1,84 @@
-<div>
-  <div>
-    <h2>人気のエピソード</h2>
-    <div>
-      <p>foo</p>
-    </div>
-    <h2>最新のエピソード</h2>
-    <div>
-      <p>bar</p>
-    </div>
-    <a href="/it-trio-web/episode">もっとみる</a>
-  </div>
+---
+import { getCollection } from "astro:content";
+import { POPULAR_EPISODE_GUID } from "../../consts";
+import extractUUID from "../../utils/extractUUID";
+
+const episodes = await getCollection("episode");
+
+const latestEpisode = episodes.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+)[0];
+const popularEpisode = episodes.find(
+  (episode) => episode.data.guid === POPULAR_EPISODE_GUID,
+);
+
+const latestEpisodeUUID = extractUUID(latestEpisode.data.url);
+const popularEpisodeUUID = popularEpisode
+  ? extractUUID(popularEpisode.data.url)
+  : null;
+---
+
+<div class="container">
+  {
+    latestEpisodeUUID && (
+      <div>
+        <h2 class="head">最新のエピソード</h2>
+        <p class="title">{latestEpisode.data.title}</p>
+        <div class="player">
+          <div
+            class="art19-web-player awp-medium awp-theme-dark-custom"
+            data-episode-id={latestEpisodeUUID}
+            data-primary-color="#2fb9f4"
+          />
+        </div>
+      </div>
+    )
+  }
+  {
+    popularEpisodeUUID && (
+      <div>
+        <h2 class="head">人気のエピソード</h2>
+        <p class="title">{popularEpisode?.data.title}</p>
+        <div class="player">
+          <div
+            class="art19-web-player awp-medium awp-theme-dark-custom"
+            data-episode-id={popularEpisodeUUID}
+            data-primary-color="#2fb9f4"
+          />
+        </div>
+      </div>
+    )
+  }
 </div>
+<p class="more">
+  <a href="/it-trio-web/episode">もっとみる</a>
+</p>
+
+<style>
+  .container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 24px;
+    place-items: center;
+
+    @media (max-width: 1020px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  .head {
+    font-size: 1.7rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  .title {
+    font-size: 1.2rem;
+    /* text-align: center; */
+    margin-top: 12px;
+  }
+  .player {
+    margin-top: 12px;
+  }
+  .more {
+    text-align: right;
+  }
+</style>
