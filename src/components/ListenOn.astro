@@ -6,24 +6,22 @@ import {
   AMAZON_MUSIC_SHOW_LINK,
   RSS_FEED_URL,
 } from "../consts";
-import listenOnSpotify from "../images/listen-on-spotify.png";
-import listenOnApplePodcast from "../images/listen-on-apple-podcast.svg";
-import listenOnAmazonMusic from "../images/listen-on-amazon-music.png";
-import rss from "../images/rss.png";
 ---
 
 <div>
   <ul class="list">
     <li class="item">
       <a href={SPOTIFY_SHOW_LINK} target="_blank">
-        <Image class="image" src={listenOnSpotify} alt="Listen on Spotify" />
+        <Image class="image" src="/it-trio-web/listen-on-spotify.png" width={660} height={160} alt="Listen on Spotify" />
       </a>
     </li>
     <li class="item">
       <a href={APPLE_PODCAST_SHOW_LINK} target="_blank">
         <Image
           class="image"
-          src={listenOnApplePodcast}
+          src="/it-trio-web/listen-on-apple-podcast.svg"
+          width={129.155}
+          height={41}
           alt="Listen on Apple Podcast"
         />
       </a>
@@ -32,14 +30,16 @@ import rss from "../images/rss.png";
       <a href={AMAZON_MUSIC_SHOW_LINK} target="_blank">
         <Image
           class="image"
-          src={listenOnAmazonMusic}
+          src="/it-trio-web/listen-on-amazon-music.png"
+          width={1374}
+          height={334}
           alt="Listen on Amazon Music"
         />
       </a>
     </li>
     <li class="item rss">
       <a href={RSS_FEED_URL} target="_blank">
-        <Image class="image" src={rss} alt="RSS Feed" />
+        <Image class="image" src="/it-trio-web/rss.png" width={256} height={256} alt="RSS Feed" />
       </a>
     </li>
   </ul>
