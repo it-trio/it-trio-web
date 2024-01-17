@@ -46,7 +46,7 @@ const episodes = (await getCollection("episode")).sort(
               <li>
                 <EpisodeListItem
                   title={episode.data.title}
-                  href={`/it-trio-web/episode/${episode.data.guid}/`}
+                  href={`/episode/${episode.data.guid}/`}
                   imageSrc={episode.data.image}
                   date={episode.data.pubDate}
                   description={episode.data.summary}
