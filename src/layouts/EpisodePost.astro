@@ -15,11 +15,17 @@ const { title, description, pubDate, url } = Astro.props;
 <html lang="ja">
   <head>
     <BaseHead title={title} description={description} />
+    <link
+      href="https://web-player.art19.com/assets/current.css"
+      media="screen"
+      rel="stylesheet"
+      type="text/css"
+    />
     <style>
       main {
-        width: calc(100% - 2em);
-        max-width: 1020px;
-        padding-top: 2em;
+        max-width: 960px;
+        padding: 16px;
+        width: 100%;
       }
       .player {
         display: grid;
@@ -31,35 +37,38 @@ const { title, description, pubDate, url } = Astro.props;
         border-radius: 12px;
         box-shadow: var(--box-shadow);
       }
-      .prose {
-        max-width: calc(100% - 2em);
+      .art19-web-player,
+      div.art19-web-player {
+        margin-bottom: 0;
+      }
+      .texts {
+        max-width: 820px;
         margin: auto;
-        padding: 1em;
-        color: rgb(var(--gray-dark));
       }
       .date {
         text-align: center;
         color: rgb(var(--gray));
+        margin-top: 12px;
+        line-height: 1;
       }
       .title {
         text-align: center;
         line-height: 1.2;
-        font-size: 1.5em;
-        margin-top: 0.5em;
+        font-size: 1.5rem;
+        margin-top: 12px;
       }
       .border {
-        margin-top: 2em;
+        margin-top: 16px;
+        margin-bottom: 16px;
       }
       .audio {
         margin: auto;
       }
+      .description{
+        font-size: 1rem;
+        line-height: 1.4;
+      }
     </style>
-    <link
-      href="https://web-player.art19.com/assets/current.css"
-      media="screen"
-      rel="stylesheet"
-      type="text/css"
-    />
   </head>
   <body>
     <Header />
@@ -89,14 +98,14 @@ const { title, description, pubDate, url } = Astro.props;
           }
         </div>
       </article>
-      <div class="prose">
+      <div class="texts">
         <div class="date">
           <FormattedDate date={pubDate} />
         </div>
         <h1 class="title">{title}</h1>
         <hr class="border" />
         <div>
-          <p>{description}</p>
+          <p class="description">{description}</p>
         </div>
       </div>
     </main>
