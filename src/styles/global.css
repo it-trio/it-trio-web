@@ -18,8 +18,7 @@
 
 @font-face {
   font-family: "NotoSansJP";
-  src: url("/fonts/NotoSansJP-VariableFont_wght.ttf")
-    format("truetype");
+  src: url("/fonts/NotoSansJP-VariableFont_wght.ttf") format("truetype");
   font-weight: 300 400 700 900;
   font-stretch: 75% 125%;
   font-style: normal;
