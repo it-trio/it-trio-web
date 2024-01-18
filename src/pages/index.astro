@@ -3,10 +3,10 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import ListenOn from "../components/ListenOn.astro";
 import WhatIs from "../components/top/WhatIs.astro";
 import Profiles from "../components/top/Profiles.astro";
 import AppealEpisodes from "../components/top/AppealEpisodes.astro";
+import Hero from "../components/top/Hero.astro";
 ---
 
 <!doctype html>
@@ -20,27 +20,21 @@ import AppealEpisodes from "../components/top/AppealEpisodes.astro";
       type="text/css"
     />
     <style>
-      main {
-        max-width: 1020px;
-      }
       section {
+        max-width: 1020px;
+        margin: 32px auto 0;
         padding: 0 16px;
+
+        @media (max-width: 720px) {
+          margin: 24px auto 0;
+        }
       }
     </style>
   </head>
   <body>
     <Header title={SITE_TITLE} />
     <main>
-      <h1>🧑‍🚀 ITトリオの日常へようこそ 🧑‍🚀</h1>
-      <p>
-        <a href="https://astro.build/">Astro</a>を使って作ったサイトです。
-        とりあえずのデザインでデプロイできるようにしました。
-        諸々実装して世に出せるクオリティになったら、カスタムドメインを検討して、SEO対策しつつポッドキャストでも宣伝するつもりです。
-        ひとまず、欲しい情報を整理するためだけに、デザイン後回しにして情報を置いていきます。
-      </p>
-      <section>
-        <ListenOn />
-      </section>
+      <Hero />
       <section>
         <WhatIs />
       </section>

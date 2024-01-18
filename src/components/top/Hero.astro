@@ -1,0 +1,64 @@
+---
+import ListenOn from "../ListenOn.astro";
+---
+
+<div class="container">
+  <p class="appeal">毎週月曜更新!</p>
+  <h1 class="title">
+    <img
+      src="/logo-channel.svg"
+      alt="ITトリオの日常"
+      width="905"
+      height="100"
+    />
+  </h1>
+  <p class="explain">
+    〜3人のエンジニアがカジュアルに学びを深めるポッドキャスト〜
+  </p>
+  <div class="listne">
+    <ListenOn />
+  </div>
+</div>
+
+<style>
+  .container {
+    text-align: center;
+    padding: 8rem 4rem;
+    background-image: url(/logo-fill-repeat.svg);
+
+    @media (max-width: 720px) {
+      padding: 56px 16px;
+    }
+  }
+  .appeal {
+    font-size: 0.8rem;
+    text-align: right;
+    max-width: 1120px;
+  }
+  .title {
+    margin-top: 8px;
+
+    @media (max-width: 720px) {
+      margin-top: 2px;
+    }
+    image {
+      width: 100%;
+      height: auto;
+    }
+  }
+  .explain {
+    font-size: 1rem;
+    margin-top: 24px;
+
+    @media (max-width: 720px) {
+      margin-top: 16px;
+    }
+  }
+  .listne {
+    margin-top: 48px;
+
+    @media (max-width: 720px) {
+      margin-top: 32px;
+    }
+  }
+</style>

@@ -5,10 +5,20 @@ import { SITE_TITLE } from "../consts";
 
 <header>
   <nav>
-    <h2><a href="/">{SITE_TITLE}</a></h2>
+    <h2>
+      <a href="/">
+        <img
+          class="logo"
+          src="/logo.svg"
+          alt={SITE_TITLE}
+          width="580"
+          height="100"
+        />
+      </a>
+    </h2>
     <div class="internal-links">
-      <HeaderLink href="/blog">Blog</HeaderLink>
-      <HeaderLink href="/episode">episode</HeaderLink>
+      <HeaderLink href="/blog">記事</HeaderLink>
+      <HeaderLink href="/episode">エピソード</HeaderLink>
     </div>
     <div></div>
   </nav>
@@ -25,9 +35,14 @@ import { SITE_TITLE } from "../consts";
     font-size: 1em;
   }
 
-  h2 a,
-  h2 a.active {
-    text-decoration: none;
+  .logo {
+    display: block;
+    width: 200px;
+    height: auto;
+
+    @media (max-width: 720px) {
+      width: 120px;
+    }
   }
   nav {
     display: flex;
