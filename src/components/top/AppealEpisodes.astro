@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import { POPULAR_EPISODE_GUID } from "../../consts";
 import extractUUID from "../../utils/extractUUID";
+import { removeUnnecessaryNewLines } from "../../utils/texts";
 
 const episodes = await getCollection("episode");
 
@@ -11,84 +12,91 @@ const latestEpisode = episodes.sort(
 const popularEpisode = episodes.find(
   (episode) => episode.data.guid === POPULAR_EPISODE_GUID,
 );
-
-const latestEpisodeUUID = extractUUID(latestEpisode.data.url);
-const popularEpisodeUUID = popularEpisode
-  ? extractUUID(popularEpisode.data.url)
-  : null;
 ---
 
+<h2 class="head">最近のオススメ</h2>
 <div class="container">
   {
-    latestEpisodeUUID && (
-      <div>
-        <h2 class="head">最新のエピソード</h2>
+    latestEpisode && (
+      <a class="content" href={`/episode/${latestEpisode.data.guid}`}>
         <p class="title">{latestEpisode.data.title}</p>
-        <div class="player">
-          <div
-            class="art19-web-player awp-medium awp-theme-dark-custom"
-            data-episode-id={latestEpisodeUUID}
-            data-primary-color="#2fb9f4"
-          />
-        </div>
-      </div>
+        <img
+          class="image"
+          src={latestEpisode.data.image}
+          alt={latestEpisode.data.title}
+        />
+        <p class="summary">
+          {removeUnnecessaryNewLines(latestEpisode.data.summary)}
+        </p>
+      </a>
     )
   }
   {
-    popularEpisodeUUID && (
-      <div>
-        <h2 class="head">人気のエピソード</h2>
-        <p class="title">{popularEpisode?.data.title}</p>
-        <div class="player">
-          <div
-            class="art19-web-player awp-medium awp-theme-dark-custom"
-            data-episode-id={popularEpisodeUUID}
-            data-primary-color="#2fb9f4"
-          />
-        </div>
-      </div>
+    popularEpisode && (
+      <a class="content" href={`/episode/${popularEpisode.data.guid}`}>
+        <p class="title">{popularEpisode.data.title}</p>
+        <img
+          class="image"
+          src={popularEpisode.data.image}
+          alt={popularEpisode.data.title}
+        />
+        <p class="summary">
+          {removeUnnecessaryNewLines(popularEpisode.data.summary)}
+        </p>
+      </a>
     )
   }
 </div>
 <p class="more">
-  <a href="/episode">もっとみる</a>
+  <a href="/episode">エピソードをもっとみる</a>
 </p>
 
 <style>
+  .head {
+    font-size: 1.5rem;
+    font-weight: 700;
+    /* text-align: center; */
+  }
   .container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-gap: 24px;
-    place-items: center;
 
     @media (max-width: 1020px) {
-      display: block;
+      grid-template-columns: 1fr;
     }
   }
-  .head {
-    font-size: 1.7rem;
-    font-weight: bold;
-    text-align: center;
+
+  .content {
+    display: block;
   }
+
   .title {
     font-size: 1.2rem;
+    font-weight: 500;
     line-height: 1.2;
+    line-break: loose;
     margin-top: 12px;
   }
-  .player {
+  .image {
+    margin: 12px auto 0;
+    width: 40%;
+    display: block;
+  }
+  .summary {
     margin-top: 12px;
+    font-size: 1rem;
   }
   .more {
     text-align: right;
-    font-size: 1.2rem;
+    font-size: 1rem;
     text-decoration: underline;
-    text-decoration-color: var(--gray);
-    color: var(--gray);
-    /* art19のスタイルでmargin-bottomがついてしまうので打ち消して調整 */
-    margin-top: -12px;
+    text-decoration-color: var(--gray-light);
+    color: var(--gray-light);
+    margin-top: 12px;
 
     a {
-      color: var(--gray);
+      color: var(--gray-light);
     }
   }
 </style>

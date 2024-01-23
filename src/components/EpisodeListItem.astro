@@ -1,4 +1,6 @@
 ---
+import { removeUnnecessaryNewLines } from '../utils/texts';
+
 interface Props {
   title: string;
   href: string;
@@ -35,7 +37,7 @@ const { title, href, imageSrc, date, description, season, episodeNumber } =
     </p>
     <p class="title">{title}</p>
     <p class="description">
-      {description.replace(/^\n+/, "").replace(/\n+/g, "\n")}
+      {removeUnnecessaryNewLines(description)}
     </p>
   </div>
 

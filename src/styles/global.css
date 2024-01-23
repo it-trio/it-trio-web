@@ -72,7 +72,7 @@ b {
   font-weight: 700;
 }
 a {
-  color: var(--accent);
+  color: var(--black);
   text-decoration: none;
 }
 p {
@@ -82,7 +82,7 @@ p {
   line-height: 1.4;
 }
 a:hover {
-  color: var(--accent);
+  opacity: 0.8;
 }
 div {
   box-sizing: border-box;
