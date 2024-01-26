@@ -14,6 +14,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # withastro/action@v1と同じ設定にしてキャッシュを共有する
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: "latest"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
+
       - name: Make changes to pull request
         run: pnpm run fetch
 
