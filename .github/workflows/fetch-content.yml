@@ -32,13 +32,13 @@ jobs:
         working-directory: "."
         run: pnpm install
 
+      - name: Make changes to pull request
+        run: pnpm run fetch
+
   createPR:
     needs: prepare
     runs-on: ubuntu-latest
     steps:
-      - name: Make changes to pull request
-        run: pnpm run fetch
-
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
