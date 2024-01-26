@@ -35,10 +35,6 @@ jobs:
       - name: Make changes to pull request
         run: pnpm run fetch
 
-  createPR:
-    needs: prepare
-    runs-on: ubuntu-latest
-    steps:
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
@@ -57,3 +53,26 @@ jobs:
             automated pr
           milestone: 1
           draft: false
+
+  # createPR:
+  #   needs: prepare
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Create Pull Request
+  #       id: cpr
+  #       uses: peter-evans/create-pull-request@v5
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #         commit-message: Update content
+  #         committer: GitHub <noreply@github.com>
+  #         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+  #         signoff: false
+  #         branch: auto-fetch
+  #         delete-branch: true
+  #         title: "[Fetch] Update content"
+  #         body: |
+  #           Fetch and Update
+  #         labels: |
+  #           automated pr
+  #         milestone: 1
+  #         draft: false
