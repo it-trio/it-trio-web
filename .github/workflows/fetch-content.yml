@@ -1,0 +1,38 @@
+name: Fetch content
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+  pull-requests: write
+
+jobs:
+  createPullRequest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Make changes to pull request
+        run: pnpm run fetch
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: Update content
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: auto-fetch
+          delete-branch: true
+          title: "[Fetch] Update content"
+          body: |
+            Fetch and Update
+
+          labels: |
+            automated pr
+          milestone: 1
+          draft: false
