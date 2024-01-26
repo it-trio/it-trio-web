@@ -27,6 +27,11 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: "./pnpm-lock.yaml"
 
+      - name: Install
+        shell: "bash"
+        working-directory: "."
+        run: pnpm install
+
       - name: Make changes to pull request
         run: pnpm run fetch
 
