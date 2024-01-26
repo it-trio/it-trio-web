@@ -3,10 +3,12 @@ name: Fetch content
 on:
   workflow_dispatch:
 
-# permissions:
-#   contents: write
-#   id-token: write
-#   pull-requests: write
+permissions:
+  actions: write
+  contents: write
+  id-token: write
+  issues: write
+  pull-requests: write
 
 jobs:
   prepare:
@@ -16,18 +18,18 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.node-version'
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
+
       # withastro/action@v1と同じ設定にしてキャッシュを共有する
       - name: Setup PNPM
         uses: pnpm/action-setup@v2
         with:
           version: "latest"
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-          cache: "pnpm"
-          cache-dependency-path: "./pnpm-lock.yaml"
 
       - name: Install
         shell: "bash"
