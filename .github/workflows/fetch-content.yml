@@ -3,10 +3,10 @@ name: Fetch content
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-  id-token: write
-  pull-requests: write
+# permissions:
+#   contents: write
+#   id-token: write
+#   pull-requests: write
 
 jobs:
   prepare:
