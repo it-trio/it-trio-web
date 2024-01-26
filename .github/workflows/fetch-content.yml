@@ -9,7 +9,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  createPullRequest:
+  prepare:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +32,10 @@ jobs:
         working-directory: "."
         run: pnpm install
 
+  createPR:
+    needs: prepare
+    runs-on: ubuntu-latest
+    steps:
       - name: Make changes to pull request
         run: pnpm run fetch
 
@@ -49,7 +53,6 @@ jobs:
           title: "[Fetch] Update content"
           body: |
             Fetch and Update
-
           labels: |
             automated pr
           milestone: 1
