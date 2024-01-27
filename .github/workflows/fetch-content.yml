@@ -1,6 +1,8 @@
 name: Fetch content
 
 on:
+  schedule:
+    - cron: '0 23 * * SUN' # 毎週日曜日の23時（UTC）、日本時間で毎週月曜日の朝8時
   workflow_dispatch:
 
 jobs:
