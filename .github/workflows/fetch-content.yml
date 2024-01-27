@@ -45,8 +45,6 @@ jobs:
           branch: auto-fetch
           delete-branch: true
           title: "[Fetch] Update content"
-          body: |
-            Fetch and Update
-          labels: |
-            automated pr
+          body: Fetch and Update
+          labels: BOT
           draft: false
