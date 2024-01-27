@@ -51,11 +51,12 @@ jobs:
           token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
           commit-message: Update content
           committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          author: GitHub <noreply@github.com>
           signoff: false
           branch: auto-fetch
           delete-branch: true
-          title: "Auto Update Content"
-          body: Fetch and Update
+          title: "Auto Update from GitHub Actions"
+          body: |
+            This is an automatic pull request changes is based on the latest content.
           labels: BOT
           draft: false
