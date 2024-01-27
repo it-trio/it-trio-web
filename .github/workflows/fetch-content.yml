@@ -3,20 +3,14 @@ name: Fetch content
 on:
   workflow_dispatch:
 
-permissions:
-  actions: write
-  contents: write
-  id-token: write
-  issues: write
-  pull-requests: write
-
 jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
 
       # withastro/action@v1と同じ設定にしてキャッシュを共有する
       - name: Setup PNPM
@@ -43,7 +37,6 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update content
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
