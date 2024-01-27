@@ -33,6 +33,15 @@ jobs:
       - name: Make changes to pull request
         run: pnpm run fetch
 
+      - name: Check for changes
+        run: |
+          if git diff --quiet; then
+            echo "変更がないので終了"
+            exit 0
+          else
+            echo "変更があるのでPRを作成にうつる"
+          fi
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
