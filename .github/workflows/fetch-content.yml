@@ -44,7 +44,7 @@ jobs:
           signoff: false
           branch: auto-fetch
           delete-branch: true
-          title: "[Fetch] Update content"
+          title: "Auto Update Content"
           body: Fetch and Update
           labels: BOT
           draft: false
