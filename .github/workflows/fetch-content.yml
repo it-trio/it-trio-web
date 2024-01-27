@@ -49,7 +49,6 @@ jobs:
             Fetch and Update
           labels: |
             automated pr
-          milestone: 1
           draft: false
 
   # createPR:
