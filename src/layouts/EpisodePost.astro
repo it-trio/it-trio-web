@@ -1,5 +1,5 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
@@ -11,6 +11,17 @@ import ListenOn from "../components/ListenOn.astro";
 type Props = CollectionEntry<"episode">["data"];
 
 const uuid = extractUUID(Astro.props.url);
+
+const episodes = (await getCollection("episode")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const currentEpisodeIndex = episodes.findIndex(
+  (episode) => episode.data.guid === Astro.props.guid,
+);
+const prevEpisodeGuid = episodes[currentEpisodeIndex + 1]?.data.guid;
+const nextEpisodeGuid = episodes[currentEpisodeIndex - 1]?.data.guid;
+
 const { title, description, pubDate, url } = Astro.props;
 ---
 
@@ -73,6 +84,17 @@ const { title, description, pubDate, url } = Astro.props;
         font-size: 1rem;
         line-height: 1.4;
       }
+      .next-prev {
+        display: flex;
+        justify-content: space-between;
+        max-width: 820px;
+        margin: 24px auto 0;
+
+        a {
+          font-size: 1rem;
+          text-decoration: underline;
+        }
+      }
     </style>
   </head>
   <body>
@@ -116,6 +138,22 @@ const { title, description, pubDate, url } = Astro.props;
           <div class="description">
             <LinkifyText text={description} />
           </div>
+        </div>
+      </div>
+      <div class="next-prev">
+        <div>
+          {
+            nextEpisodeGuid && (
+              <a href={`/episode/${nextEpisodeGuid}`}>次のエピソード</a>
+            )
+          }
+        </div>
+        <div>
+          {
+            prevEpisodeGuid && (
+              <a href={`/episode/${prevEpisodeGuid}`}>前のエピソード</a>
+            )
+          }
         </div>
       </div>
     </main>
