@@ -1,19 +1,13 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
-import { SITE_TITLE } from "../consts";
+import Logo from "./icons/Logo.astro";
 ---
 
 <header>
   <nav>
     <h2>
-      <a href="/">
-        <img
-          class="logo"
-          src="/logo.svg"
-          alt={SITE_TITLE}
-          width="580"
-          height="100"
-        />
+      <a class="icon" href="/">
+        <Logo name="logo" />
       </a>
     </h2>
     <div class="internal-links">
@@ -35,10 +29,12 @@ import { SITE_TITLE } from "../consts";
     font-size: 1em;
   }
 
-  .logo {
+  .icon {
     display: block;
     width: 200px;
     height: auto;
+    color: var(--accent);
+    padding: 1rem 0;
 
     @media (max-width: 720px) {
       width: 120px;
@@ -49,12 +45,7 @@ import { SITE_TITLE } from "../consts";
     align-items: center;
     justify-content: space-between;
   }
-  nav a {
-    padding: 1em 0.5em;
-    color: var(--black);
-    border-bottom: 4px solid transparent;
-    text-decoration: none;
-  }
+
   nav a.active {
     text-decoration: none;
     border-bottom-color: var(--accent);

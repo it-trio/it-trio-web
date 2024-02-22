@@ -1,17 +1,15 @@
+---
+import LogoChannel from "../icons/LogoChannel.astro";
+---
+
 <div>
   <p>
-    <img
-      class="logo"
-      src="/logo-channel.svg"
-      alt="ITトリオの日常"
-      width="905"
-      height="100"
-    />は、3人のエンジニアが雑談ミーティングをするポッドキャスト番組です。
-    カジュアルに学びを深めたり、共感したり、楽しんだり、ラジバンダリー。
-    日本とカナダを繋いで頑張っています。
-    日本時間の毎週月曜日に新しいエピソードを公開しています。
-    たまにゲストをお招きしています。 たまに一人で喋っています。
-    でも基本的には3人で喋っています。
+    <div class="icon">
+      <LogoChannel />
+    </div>
+    は、3人のエンジニアが雑談ミーティングをするポッドキャスト番組です。 カジュアルに学びを深めたり、共感したり、楽しんだり、ラジバンダリー。
+    日本とカナダを繋いで頑張っています。 日本時間の毎週月曜日に新しいエピソードを公開しています。
+    たまにゲストをお招きしています。 たまに一人で喋っています。 でも基本的には3人で喋っています。
   </p>
 </div>
 
@@ -19,5 +17,12 @@
   .logo {
     width: 200px;
     height: auto;
+  }
+  .icon {
+    display: inline-block;
+    width: 200px;
+    height: auto;
+    margin-right: 4px;
+    color: var(--accent);
   }
 </style>
