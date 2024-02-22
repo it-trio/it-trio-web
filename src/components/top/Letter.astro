@@ -1,0 +1,50 @@
+---
+import { GOOGLE_FORM_LINK } from "../../consts";
+---
+
+<div class="container">
+  <h2 class="title">番組の感想やリクエストはこちらから</h2>
+  <!-- メールのSVG -->
+  <a
+    class="link-logo"
+    href={GOOGLE_FORM_LINK}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
+    <svg
+      class="w-12 h-12"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+    </svg>
+  </a>
+  <p>(Google Formが開きます)</p>
+</div>
+
+<style>
+  /* 全体を角丸で余白多めブルー背景で囲い、テキストなどを真ん中に置いて強調するcss */
+  .container {
+    padding: 80px;
+    border-radius: 20px;
+    background-color: #3b82f6;
+    text-align: center;
+  }
+  .title {
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    color: #f0f8ff;
+  }
+  .link-logo {
+    display: block;
+    width: 40px;
+    height: 40px;
+    color: #f0f8ff;
+  }
+</style>

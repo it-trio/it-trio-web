@@ -11,5 +11,7 @@ export const AMAZON_MUSIC_SHOW_LINK =
 export const YOUTUBE_MUSIC_SHOW_LINK =
   "https://music.youtube.com/playlist?list=PLqtv1UJuRQssCX_himpcWZLalPSeHIcR3&si=7FplzKGZJZp2Gci2";
 
+export const GOOGLE_FORM_LINK = "https://forms.gle/sqzWk2Yb79cMvFGg8"
+
 export const POPULAR_EPISODE_GUID =
   "zM74U6lSzfptPHb7JBjCXQD1iXKMHHGz3k53s6C_hWc";

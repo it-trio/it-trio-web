@@ -7,6 +7,7 @@ import WhatIs from "../components/top/WhatIs.astro";
 import Profiles from "../components/top/Profiles.astro";
 import AppealEpisodes from "../components/top/AppealEpisodes.astro";
 import Hero from "../components/top/Hero.astro";
+import Letter from "../components/top/Letter.astro";
 ---
 
 <!doctype html>
@@ -27,7 +28,7 @@ import Hero from "../components/top/Hero.astro";
   </head>
   <body>
     <Header title={SITE_TITLE} />
-    <main>
+    <>
       <Hero />
       <section>
         <WhatIs />
@@ -38,7 +39,10 @@ import Hero from "../components/top/Hero.astro";
       <section>
         <AppealEpisodes />
       </section>
-    </main>
+      <section>
+        <Letter />
+      </section>
+    </>
     <Footer />
   </body>
 </html>
