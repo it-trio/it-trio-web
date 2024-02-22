@@ -6,6 +6,7 @@ import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import extractUUID from "../utils/extractUUID.ts";
 import LinkifyText from "../components/LinkifyText.astro";
+import ListenOn from "../components/ListenOn.astro";
 
 type Props = CollectionEntry<"episode">["data"];
 
@@ -58,6 +59,9 @@ const { title, description, pubDate, url } = Astro.props;
         font-size: 1.5rem;
         margin-top: 12px;
       }
+      .listenOn {
+        margin-top: 12px;
+      }
       .border {
         margin-top: 16px;
         margin-bottom: 16px;
@@ -104,6 +108,9 @@ const { title, description, pubDate, url } = Astro.props;
           <FormattedDate date={pubDate} />
         </div>
         <h1 class="title">{title}</h1>
+        <div class="listenOn">
+          <ListenOn hideRSS />
+        </div>
         <hr class="border" />
         <div>
           <div class="description">
