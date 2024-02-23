@@ -100,25 +100,32 @@ import nabe from "../../images/nabe.jpg";
 </style>
 
 <script>
-  // 各profileをintersection observerで監視して、profileFadeInを子要素のprofileに付与する
-  const ogu = document.getElementById("profile-ogura");
-  const che = document.getElementById("profile-cheese");
-  const nab = document.getElementById("profile-nabe");
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("profileFadeIn");
-        }
-      });
-    },
-    {
-      root: null,
-      rootMargin: "0px",
-      threshold: 0.3,
-    },
-  );
-  observer.observe(ogu!);
-  observer.observe(che!);
-  observer.observe(nab!);
+  const observerCreateor = (delay: number) => {
+    return new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            if (window.innerWidth > 720) {
+              setTimeout(() => {
+                entry.target.classList.add("profileFadeIn");
+              }, delay);
+            } else {
+              entry.target.classList.add("profileFadeIn");
+            }
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "0px",
+        threshold: 0.3,
+      },
+    );
+  };
+  const observerOgu = observerCreateor(0);
+  const observerChe = observerCreateor(100);
+  const observerNab = observerCreateor(200);
+  observerOgu.observe(document.getElementById("profile-ogura")!);
+  observerChe.observe(document.getElementById("profile-cheese")!);
+  observerNab.observe(document.getElementById("profile-nabe")!);
 </script>
