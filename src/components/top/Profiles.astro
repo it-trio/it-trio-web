@@ -5,7 +5,6 @@ import nabe from "../../images/nabe.jpg";
 ---
 
 <div class="container">
-  <h2 class="trio">パーソナリティー</h2>
   <div class="content">
     <div class="profile ogura">
       <img class="image" src={ogura.src} alt="おぐらくんの似顔絵" />
@@ -47,11 +46,13 @@ import nabe from "../../images/nabe.jpg";
     border-top-right-radius: 2px;
     border-top-left-radius: 2px;
     font-size: 1.8rem;
-    color: var(--accent-white);
-    background-color: var(--accent);
+    /* color: var(--accent-white);
+    background-color: var(--accent); */
   }
   .content {
     display: grid;
+    border-radius: 4px;
+    overflow: hidden;
     grid-template-columns: 1fr 1fr 1fr;
 
     @media (max-width: 720px) {
@@ -63,13 +64,13 @@ import nabe from "../../images/nabe.jpg";
     padding: 8px 16px 16px;
   }
   .ogura {
-    background-color: #b9e9e8;
+    background-color: var(--ogura);
   }
   .cheese {
-    background-color: #eaddb8;
+    background-color: var(--cheese);
   }
   .nabe {
-    background-color: #e8b8b9;
+    background-color: var(--nabe);
   }
 
   .image {
