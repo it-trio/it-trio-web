@@ -4,13 +4,15 @@ import LogoChannel from "../icons/LogoChannel.astro";
 ---
 
 <div class="container">
-  <p class="appeal">\ 毎週月曜更新! /</p>
-  <h1 class="title">
-    <LogoChannel />
-  </h1>
-  <p class="explain">
-    〜3人のエンジニアがカジュアルに学びを深めるポッドキャスト〜
-  </p>
+  <div class="content">
+    <p class="appeal">\ 毎週月曜更新! /</p>
+    <h1 class="title">
+      <LogoChannel />
+    </h1>
+    <p class="explain">
+      〜3人のエンジニアがカジュアルに学びを深めるポッドキャスト〜
+    </p>
+  </div>
   <div class="listne">
     <ListenOn />
   </div>
@@ -20,10 +22,44 @@ import LogoChannel from "../icons/LogoChannel.astro";
   .container {
     text-align: center;
     padding: 6rem 4rem;
-    background-image: url(/logo-fill-repeat.svg);
+    background-color: var(--accent);
+    opacity: 1;
+    background:
+      radial-gradient(
+        circle,
+        transparent 20%,
+        var(--accent) 20%,
+        var(--accent) 80%,
+        transparent 80%,
+        transparent
+      ),
+      radial-gradient(
+          circle,
+          transparent 20%,
+          var(--accent) 20%,
+          var(--accent) 80%,
+          transparent 80%,
+          transparent
+        )
+        27.5px 27.5px,
+      linear-gradient(#ffffff 2.2px, transparent 2.2px) 0 -1.1px,
+      linear-gradient(90deg, #ffffff 2.2px, var(--accent) 2.2px) -1.1px 0;
+    background-size:
+      55px 55px,
+      55px 55px,
+      27.5px 27.5px,
+      27.5px 27.5px;
 
     @media (max-width: 720px) {
       padding: 32px 12px;
+    }
+  }
+  .content {
+    background-color: var(--accent);
+    padding: 16px;
+
+    @media (max-width: 720px) {
+      padding: 8px;
     }
   }
   .appeal {
@@ -38,6 +74,7 @@ import LogoChannel from "../icons/LogoChannel.astro";
     width: 90%;
     height: auto;
     color: var(--accent-white);
+    line-height: 1;
 
     @media (max-width: 720px) {
       margin-top: 2px;
@@ -48,6 +85,7 @@ import LogoChannel from "../icons/LogoChannel.astro";
     margin-top: 24px;
     color: var(--accent-white);
     white-space: normal;
+
     @media (max-width: 720px) {
       margin-top: 16px;
     }
