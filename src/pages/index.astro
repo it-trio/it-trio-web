@@ -24,6 +24,9 @@ import Letter from "../components/top/Letter.astro";
           margin: 24px auto 0;
         }
       }
+      .no-horizonal-padding {
+        padding: 0;
+      }
     </style>
   </head>
   <body>
@@ -33,7 +36,7 @@ import Letter from "../components/top/Letter.astro";
       <section>
         <WhatIs />
       </section>
-      <section>
+      <section class="no-horizonal-padding">
         <Profiles />
       </section>
       <section>

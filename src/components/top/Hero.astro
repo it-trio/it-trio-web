@@ -4,7 +4,7 @@ import LogoChannel from "../icons/LogoChannel.astro";
 ---
 
 <div class="container">
-  <p class="appeal">毎週月曜更新!</p>
+  <p class="appeal">\ 毎週月曜更新! /</p>
   <h1 class="title">
     <LogoChannel />
   </h1>
@@ -19,11 +19,11 @@ import LogoChannel from "../icons/LogoChannel.astro";
 <style>
   .container {
     text-align: center;
-    padding: 8rem 4rem;
+    padding: 6rem 4rem;
     background-image: url(/logo-fill-repeat.svg);
 
     @media (max-width: 720px) {
-      padding: 56px 16px;
+      padding: 32px 12px;
     }
   }
   .appeal {
@@ -47,7 +47,7 @@ import LogoChannel from "../icons/LogoChannel.astro";
     font-size: 1rem;
     margin-top: 24px;
     color: var(--accent-white);
-
+    white-space: normal;
     @media (max-width: 720px) {
       margin-top: 16px;
     }

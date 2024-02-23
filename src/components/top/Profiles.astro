@@ -4,18 +4,10 @@ import cheese from "../../images/cheese.jpg";
 import nabe from "../../images/nabe.jpg";
 ---
 
-<div>
-  <h2>
-    <img
-      class="trio"
-      src="/logo.svg"
-      alt="ITトリオ"
-      width="580"
-      height="100"
-    />？
-  </h2>
+<div class="container">
+  <h2 class="trio">パーソナリティー</h2>
   <div class="content">
-    <div class="profile">
+    <div class="profile ogura">
       <img class="image" src={ogura.src} alt="おぐらくんの似顔絵" />
       <p class="name">おぐらくん</p>
       <p class="explain">
@@ -25,7 +17,7 @@ import nabe from "../../images/nabe.jpg";
         ITトリオの日常の編集から更新まで、色々やっている。
       </p>
     </div>
-    <div class="profile">
+    <div class="profile cheese">
       <img class="image" src={cheese.src} alt="ちーずの似顔絵" />
       <p class="name">ちーず</p>
       <p class="explain">
@@ -35,7 +27,7 @@ import nabe from "../../images/nabe.jpg";
         今年の抱負は「#丁寧な暮らし」
       </p>
     </div>
-    <div class="profile">
+    <div class="profile nabe">
       <img class="image" src={nabe.src} alt="なべちゃんの似顔絵" />
       <p class="name">なべちゃん</p>
       <p class="explain">
@@ -48,19 +40,19 @@ import nabe from "../../images/nabe.jpg";
 </div>
 
 <style>
+  .container {
+  }
   .trio {
-    width: 340px;
-    height: auto;
-
-    @media (max-width: 720px) {
-      width: 200px;
-    }
+    padding: 1rem 1rem;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+    font-size: 1.8rem;
+    color: var(--accent-white);
+    background-color: var(--accent);
   }
   .content {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
-    margin-top: 20px;
 
     @media (max-width: 720px) {
       grid-template-columns: 1fr;
@@ -68,7 +60,18 @@ import nabe from "../../images/nabe.jpg";
   }
   .profile {
     text-align: center;
+    padding: 8px 16px 16px;
   }
+  .ogura {
+    background-color: #b9e9e8;
+  }
+  .cheese {
+    background-color: #eaddb8;
+  }
+  .nabe {
+    background-color: #e8b8b9;
+  }
+
   .image {
     width: 180px;
     height: 180px;
