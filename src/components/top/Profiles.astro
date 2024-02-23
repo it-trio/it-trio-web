@@ -6,7 +6,7 @@ import nabe from "../../images/nabe.jpg";
 
 <div class="container">
   <div class="content">
-    <div class="profile ogura">
+    <div id="profile-ogura" class="profile ogura">
       <img class="image" src={ogura.src} alt="おぐらくんの似顔絵" />
       <p class="name">おぐらくん</p>
       <p class="explain">
@@ -16,7 +16,7 @@ import nabe from "../../images/nabe.jpg";
         ITトリオの日常の編集から更新まで、色々やっている。
       </p>
     </div>
-    <div class="profile cheese">
+    <div id="profile-cheese" class="profile cheese">
       <img class="image" src={cheese.src} alt="ちーずの似顔絵" />
       <p class="name">ちーず</p>
       <p class="explain">
@@ -26,7 +26,7 @@ import nabe from "../../images/nabe.jpg";
         今年の抱負は「#丁寧な暮らし」
       </p>
     </div>
-    <div class="profile nabe">
+    <div id="profile-nabe" class="profile nabe">
       <img class="image" src={nabe.src} alt="なべちゃんの似顔絵" />
       <p class="name">なべちゃん</p>
       <p class="explain">
@@ -62,6 +62,16 @@ import nabe from "../../images/nabe.jpg";
   .profile {
     text-align: center;
     padding: 8px 16px 16px;
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  .profileFadeIn {
+    opacity: 1;
+    transform: translateX(0);
+    transition:
+      opacity 0.6s ease,
+      delay 0.3s,
+      transform 0.6s ease;
   }
   .ogura {
     background-color: var(--ogura);
@@ -88,3 +98,27 @@ import nabe from "../../images/nabe.jpg";
     text-align: left;
   }
 </style>
+
+<script>
+  // 各profileをintersection observerで監視して、profileFadeInを子要素のprofileに付与する
+  const ogu = document.getElementById("profile-ogura");
+  const che = document.getElementById("profile-cheese");
+  const nab = document.getElementById("profile-nabe");
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("profileFadeIn");
+        }
+      });
+    },
+    {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.3,
+    },
+  );
+  observer.observe(ogu!);
+  observer.observe(che!);
+  observer.observe(nab!);
+</script>
