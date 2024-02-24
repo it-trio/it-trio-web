@@ -8,6 +8,7 @@ import Profiles from "../components/top/Profiles.astro";
 import AppealEpisodes from "../components/top/AppealEpisodes.astro";
 import Hero from "../components/top/Hero.astro";
 import Letter from "../components/top/Letter.astro";
+import FollowMe from "../components/top/FollowMe.astro";
 ---
 
 <!doctype html>
@@ -43,27 +44,33 @@ import Letter from "../components/top/Letter.astro";
           var(--nabe) 66.6666%
         );
       }
+
+      .spacer {
+        margin-top: 32px;
+      }
     </style>
   </head>
   <body>
     <Header title={SITE_TITLE} />
-    <>
-      <Hero />
-      <section>
-        <WhatIs />
+    <Hero />
+    <section>
+      <WhatIs />
+    </section>
+    <div class="profile-section-container">
+      <section class="no-horizontal-padding">
+        <Profiles />
       </section>
-      <div class="profile-section-container">
-        <section class="no-horizontal-padding">
-          <Profiles />
-        </section>
-      </div>
-      <section>
-        <AppealEpisodes />
-      </section>
-      <section>
-        <Letter />
-      </section>
-    </>
+    </div>
+    <section>
+      <AppealEpisodes />
+    </section>
+    <section>
+      <Letter />
+    </section>
+    <section>
+      <FollowMe />
+    </section>
+    <div class="spacer"></div>
     <Footer />
   </body>
 </html>

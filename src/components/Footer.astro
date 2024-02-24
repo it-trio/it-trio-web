@@ -3,7 +3,6 @@ const today = new Date();
 ---
 
 <footer>
-  &copy; {today.getFullYear()} ITトリオ. All rights reserved.
   <div class="social-links">
     <a
       href="https://twitter.com/TorioIt"
@@ -44,25 +43,23 @@ const today = new Date();
       >
     </a>
   </div>
+  &copy; {today.getFullYear()} ITトリオ. All rights reserved.
 </footer>
 <style>
   footer {
-    padding: 2em 1em 6em 1em;
-    background: linear-gradient(var(--gray-gradient)) no-repeat;
-    color: rgb(var(--gray));
+    padding: 16px 32px;
+    background: #f5f6fa;
+    color: gray;
     text-align: center;
+    font-size: 1rem;
   }
   .social-links {
     display: flex;
     justify-content: center;
     gap: 1em;
-    margin-top: 1em;
+    margin-bottom: 8px;
   }
   .social-links a {
     text-decoration: none;
-    color: rgb(var(--gray));
-  }
-  .social-links a:hover {
-    color: rgb(var(--gray-dark));
   }
 </style>

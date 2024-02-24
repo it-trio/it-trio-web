@@ -5,16 +5,16 @@
  */
 
 :root {
-  --accent: #3b82f6;
+  --accent: #2361f5;
   --accent-white: #ffffff;
   --accent-dark: #000d8a;
   --ogura: #b9e9e8;
   --cheese: #eaddb8;
   --nabe: #e8b8b9;
+  --text-primary: #242424;
   --black: 15, 18, 25;
   --gray: 96, 115, 159;
   --gray-light: 229, 233, 240;
-  --gray-dark: 34, 41, 57;
   --gray-gradient: rgba(var(--gray-light), 50%), #fff;
   --box-shadow: 0 2px 6px rgba(var(--gray), 25%),
     0 8px 24px rgba(var(--gray), 33%), 0 16px 32px rgba(var(--gray), 33%);
@@ -36,7 +36,7 @@ body {
   background-size: 100% 600px;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  color: rgb(var(--gray-dark));
+  color: var(--text-primary);
   font-size: 20px;
   line-height: 1.7;
 }
@@ -52,7 +52,6 @@ h4,
 h5,
 h6 {
   margin: 0;
-  color: rgb(var(--black));
   line-height: 1.2;
 }
 h1 {
@@ -75,7 +74,7 @@ b {
   font-weight: 700;
 }
 a {
-  color: var(--black);
+  color: var(--text-primary);
   text-decoration: none;
 }
 p {
