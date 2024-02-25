@@ -11,18 +11,11 @@ interface Props {
   episodeNumber: number;
 }
 
-const { title, href, imageSrc, date, description, season, episodeNumber } =
-  Astro.props;
+const { title, href, imageSrc, date, description, season, episodeNumber } = Astro.props;
 ---
 
 <a href={href} class="container">
-  <img
-    class="image"
-    width="150"
-    height="150"
-    src={imageSrc}
-    alt=`${title}のサムネイル`
-  />
+  <img class="image" width="150" height="150" src={imageSrc} alt=`${title}のサムネイル` />
   <div class="info">
     <p class="date">
       <time class="time" datetime={date.toISOString()}>

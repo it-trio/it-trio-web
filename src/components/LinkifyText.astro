@@ -5,8 +5,7 @@ interface Props {
 const { text, ...props } = Astro.props;
 
 function replaceUrls(text: string) {
-  const urlRegex =
-    /(\bhttps:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
+  const urlRegex = /(\bhttps:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
   const parts = text.split(urlRegex);
 
   return parts

@@ -6,9 +6,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { getCollection } from "astro:content";
 import EpisodeListItem from "../../components/EpisodeListItem.astro";
 
-const episodes = (await getCollection("episode")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
 <!doctype html>
@@ -29,12 +27,7 @@ const episodes = (await getCollection("episode")).sort(
         padding: 0;
       }
     </style>
-    <link
-      href="https://web-player.art19.com/assets/current.css"
-      media="screen"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <link href="https://web-player.art19.com/assets/current.css" media="screen" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <Header />
@@ -44,15 +37,7 @@ const episodes = (await getCollection("episode")).sort(
           {
             episodes.map((episode) => (
               <li>
-                <EpisodeListItem
-                  title={episode.data.title}
-                  href={`/episode/${episode.data.guid}/`}
-                  imageSrc={episode.data.image}
-                  date={episode.data.pubDate}
-                  description={episode.data.summary}
-                  season={episode.data.season}
-                  episodeNumber={episode.data.number}
-                />
+                <EpisodeListItem title={episode.data.title} href={`/episode/${episode.data.guid}/`} imageSrc={episode.data.image} date={episode.data.pubDate} description={episode.data.summary} season={episode.data.season} episodeNumber={episode.data.number} />
               </li>
             ))
           }
