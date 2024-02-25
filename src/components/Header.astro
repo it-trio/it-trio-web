@@ -10,11 +10,10 @@ import Logo from "./icons/Logo.astro";
         <Logo name="logo" />
       </a>
     </h2>
-    <div class="internal-links">
-      <HeaderLink href="/blog">記事</HeaderLink>
+    <div class="links">
+      <HeaderLink href="/blog">ブログ</HeaderLink>
       <HeaderLink href="/episode">エピソード</HeaderLink>
     </div>
-    <div></div>
   </nav>
 </header>
 <style>
@@ -49,5 +48,10 @@ import Logo from "./icons/Logo.astro";
   nav a.active {
     text-decoration: none;
     border-bottom-color: var(--accent);
+  }
+  .links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
   }
 </style>
