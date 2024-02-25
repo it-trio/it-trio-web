@@ -4,6 +4,10 @@ import { GOOGLE_FORM_LINK } from "../../consts";
 
 <div class="container">
   <h2 class="title">おたより募集中！</h2>
+  <p class="explain">
+    <span>番組の感想や質問、リクエストなどなんでも大歓迎！</span>
+    <span>番組内で返答します！</span>
+  </p>
   <div class="animation-container">
     <div class="laptop">
       <svg
@@ -76,12 +80,23 @@ import { GOOGLE_FORM_LINK } from "../../consts";
   .container {
     text-align: center;
     background-color: var(--accent);
-    padding: 12px;
+    padding: 24px 12px;
     border-radius: 8px;
   }
   .title {
     color: var(--accent-white);
     font-size: 1.4rem;
+  }
+
+  .explain {
+    margin-top: 8px;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--accent-white);
+  }
+
+  .explain span {
+    display: block;
   }
 
   .animation-container {
@@ -160,7 +175,7 @@ import { GOOGLE_FORM_LINK } from "../../consts";
   }
   .caution {
     margin-top: 8px;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: var(--accent-white);
   }
 </style>

@@ -9,4 +9,6 @@ export default {
       },
     },
   ],
+  printWidth: 2024,
+  proseWrap: "preserve",
 };

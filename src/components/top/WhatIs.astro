@@ -3,17 +3,31 @@ import LogoChannel from "../icons/LogoChannel.astro";
 ---
 
 <div>
-  <p>
-    <div class="icon">
-      <LogoChannel />
-    </div>
-    は、3人のエンジニアが雑談ミーティングをするポッドキャスト番組です。 カジュアルに学びを深めたり、共感したり、楽しんだり、ラジバンダリー。
-    日本とカナダを繋いで頑張っています。 日本時間の毎週月曜日に新しいエピソードを公開しています。
-    たまにゲストをお招きしています。 たまに一人で喋っています。 でも基本的には3人で喋っています。
+  <p class="content">
+    <span class="icon"><LogoChannel /></span>は、
+    3人のエンジニアが雑談ミーティングをするポッドキャストです。
+    ゆるく楽しく聴いていると、&#10;いつの間にか学びが得られちゃう。
+    そんな番組を目指しています。&#10;日本🇯🇵とカナダ🇨🇦を繋いで収録して、
+    日本時間の毎週月曜日に新しいエピソードを公開しています。
+    番外編の「ウラガワ」シリーズも不定期で更新中！
   </p>
 </div>
 
 <style>
+  .content {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    white-space: pre-line;
+    text-align: center;
+
+    @media (max-width: 720px) {
+      font-size: 1.1rem;
+      line-height: 1.5;
+    }
+  }
+  .content span {
+    display: inline-block;
+  }
   .logo {
     width: 200px;
     height: auto;
