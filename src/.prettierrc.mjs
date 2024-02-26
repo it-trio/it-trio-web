@@ -6,9 +6,9 @@ export default {
       files: "*.astro",
       options: {
         parser: "astro",
+        printWidth: 2024,
       },
     },
   ],
-  printWidth: 2024,
   proseWrap: "preserve",
 };
