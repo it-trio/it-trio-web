@@ -329,7 +329,7 @@ a:hover {
   font-size: 2rem;
   font-weight: 700;
   line-height: 1.25;
-  margin: 0;
+  margin: 4px 0 0 0;
   padding: 0;
   color: #293030;
 }
@@ -392,6 +392,7 @@ a:hover {
 
 /*  */
 .entry-content {
+  font-size: 1rem;
   line-height: 1.25;
 }
 .entry-content a {
@@ -413,6 +414,8 @@ a:hover {
 .entry-content video {
   max-width: 100%;
   height: auto;
+  width: auto;
+  max-height: 400px;
   display: block;
   margin: 0 auto;
 }
@@ -513,6 +516,7 @@ a:hover {
 }
 .entry-content blockquote p {
   margin-bottom: 0;
+  font-size: 1.2rem;
 }
 .entry-content blockquote cite {
   display: block;
