@@ -1,9 +1,15 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
 import Logo from "./icons/Logo.astro";
+
+interface Props {
+  fixed?: boolean;
+}
+
+const { fixed }: Props = Astro.props;
 ---
 
-<header>
+<header class={fixed ? "fixed" : ""}>
   <nav>
     <h2>
       <a class="icon" href="/">
@@ -22,6 +28,14 @@ import Logo from "./icons/Logo.astro";
     padding: 0 1em;
     background: var(--accent-white);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+  }
+  .fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   }
   h2 {
     margin: 0;

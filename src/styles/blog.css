@@ -344,7 +344,7 @@ a:hover {
   border: 1px solid #f0f1f1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: 80px 16px 40px;
 }
 .entry-header {
   position: relative;

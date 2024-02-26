@@ -15,7 +15,7 @@ const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <style>
       main {
-        padding: 16px;
+        padding: 96px 16px 40px;
         max-width: 960px;
       }
       ul {
@@ -30,7 +30,7 @@ const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.
     <link href="https://web-player.art19.com/assets/current.css" media="screen" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <Header />
+    <Header fixed />
     <main>
       <section>
         <ul>
