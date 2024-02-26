@@ -15,8 +15,19 @@ const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
     <style>
       main {
-        padding: 96px 16px 40px;
         max-width: 960px;
+
+        padding-top: calc(var(--header-height) + var(--page-top-padding));
+        padding-right: 16px;
+        padding-bottom: 40px;
+        padding-left: 16px;
+
+        @media (max-width: 720px) {
+          padding-top: calc(var(--header-height-mobile) + var(--page-top-padding));
+          padding-right: 16px;
+          padding-bottom: 40px;
+          padding-left: 16px;
+        }
       }
       ul {
         display: flex;

@@ -28,6 +28,11 @@ const { fixed }: Props = Astro.props;
     padding: 0 1em;
     background: var(--accent-white);
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
+    height: var(--header-height);
+
+    @media (max-width: 720px) {
+      height: var(--header-height-mobile);
+    }
   }
   .fixed {
     position: fixed;
