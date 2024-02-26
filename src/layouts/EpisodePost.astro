@@ -12,13 +12,9 @@ type Props = CollectionEntry<"episode">["data"];
 
 const uuid = extractUUID(Astro.props.url);
 
-const episodes = (await getCollection("episode")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const currentEpisodeIndex = episodes.findIndex(
-  (episode) => episode.data.guid === Astro.props.guid,
-);
+const currentEpisodeIndex = episodes.findIndex((episode) => episode.data.guid === Astro.props.guid);
 const prevEpisodeGuid = episodes[currentEpisodeIndex + 1]?.data.guid;
 const nextEpisodeGuid = episodes[currentEpisodeIndex - 1]?.data.guid;
 
@@ -28,12 +24,7 @@ const { title, description, pubDate, url } = Astro.props;
 <html lang="ja">
   <head>
     <BaseHead title={title} description={description} />
-    <link
-      href="https://web-player.art19.com/assets/current.css"
-      media="screen"
-      rel="stylesheet"
-      type="text/css"
-    />
+    <link href="https://web-player.art19.com/assets/current.css" media="screen" rel="stylesheet" type="text/css" />
     <style>
       main {
         max-width: 960px;
@@ -104,18 +95,11 @@ const { title, description, pubDate, url } = Astro.props;
         <div class="player">
           {
             uuid !== null ? (
-              <div
-                class="art19-web-player awp-artwork awp-theme-dark-custom"
-                data-episode-id={uuid}
-                data-primary-color="#2fb9f4"
-              />
+              <div class="art19-web-player awp-artwork awp-theme-dark-custom" data-episode-id={uuid} data-primary-color="#2fb9f4" />
             ) : (
               <>
                 <div class="hero-image">
-                  <img
-                    src="/images/hero.jpg"
-                    alt="The Art of Product Podcast"
-                  />
+                  <img src="/images/hero.jpg" alt="The Art of Product Podcast" />
                 </div>
                 <div>
                   <audio class="audio" src={url} controls />
@@ -142,24 +126,14 @@ const { title, description, pubDate, url } = Astro.props;
       </div>
       <div class="next-prev">
         <div>
-          {
-            nextEpisodeGuid && (
-              <a href={`/episode/${nextEpisodeGuid}`}>次のエピソード</a>
-            )
-          }
+          {nextEpisodeGuid && <a href={`/episode/${nextEpisodeGuid}`}>次のエピソード</a>}
         </div>
         <div>
-          {
-            prevEpisodeGuid && (
-              <a href={`/episode/${prevEpisodeGuid}`}>前のエピソード</a>
-            )
-          }
+          {prevEpisodeGuid && <a href={`/episode/${prevEpisodeGuid}`}>前のエピソード</a>}
         </div>
       </div>
     </main>
     <Footer />
-    <script
-      src="https://web-player.art19.com/assets/current.js"
-      type="text/javascript"></script>
+    <script src="https://web-player.art19.com/assets/current.js" type="text/javascript"></script>
   </body>
 </html>
