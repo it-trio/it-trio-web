@@ -283,7 +283,7 @@ template {
 }
 html,
 body {
-  background: #f9fafb;
+  background: var(--background-weak);
   font-family:
     helvetica,
     Segoe UI,
