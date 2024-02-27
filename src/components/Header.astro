@@ -11,11 +11,9 @@ const { fixed }: Props = Astro.props;
 
 <header class={fixed ? "fixed" : ""}>
   <nav>
-    <h2>
-      <a class="icon" href="/">
-        <Logo name="logo" />
-      </a>
-    </h2>
+    <a class="icon" href="/">
+      <Logo name="logo" />
+    </a>
     <div class="links">
       <HeaderLink href="/blog">ブログ</HeaderLink>
       <HeaderLink href="/episode">エピソード</HeaderLink>
@@ -42,17 +40,12 @@ const { fixed }: Props = Astro.props;
     z-index: 100;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   }
-  h2 {
-    margin: 0;
-    font-size: 1em;
-  }
 
   .icon {
-    display: block;
+    display: flex;
     width: 200px;
     height: auto;
     color: var(--accent);
-    padding: 1rem 0;
 
     @media (max-width: 720px) {
       width: 120px;
@@ -62,6 +55,7 @@ const { fixed }: Props = Astro.props;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 100%;
   }
 
   nav a.active {
