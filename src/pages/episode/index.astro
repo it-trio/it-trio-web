@@ -10,12 +10,13 @@ import { generatePageTitle } from "../../utils/pageTitle";
 const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const pageTitle = generatePageTitle("エピソード一覧");
+const pageDescription = "ポッドキャスト「ITトリオの日常」のエピソード一覧ページです。";
 ---
 
 <!doctype html>
 <html lang="ja">
   <head>
-    <BaseHead title={pageTitle} description={SITE_DESCRIPTION} />
+    <BaseHead title={pageTitle} description={pageDescription} />
     <style>
       main {
         max-width: 960px;

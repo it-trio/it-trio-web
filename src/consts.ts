@@ -1,5 +1,7 @@
-export const SITE_TITLE = "ITトリオの日常 | エンジニア3人がカジュアルに学びを深めるポッドキャスト";
-export const SITE_DESCRIPTION = "ITトリオの日常は、エンジニア3人がカジュアルに学びを深めるポッドキャストです。";
+export const SITE_TITLE =
+  "ITトリオの日常 | エンジニア3人がカジュアルに学びを深めるポッドキャスト";
+export const SITE_DESCRIPTION =
+  "ITトリオの日常は、エンジニア3人がカジュアルに学びを深めるポッドキャストです。";
 
 export const RSS_FEED_URL = "https://rss.art19.com/it-pitpa";
 export const SPOTIFY_SHOW_LINK =

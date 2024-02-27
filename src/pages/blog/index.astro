@@ -10,12 +10,13 @@ import { generatePageTitle } from "../../utils/pageTitle";
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const pageTitle = generatePageTitle("ブログ一覧");
+const pageDescription = "ITトリオのブログ記事一覧です。";
 ---
 
 <!doctype html>
 <html lang="ja">
   <head>
-    <BaseHead title={pageTitle} description={SITE_DESCRIPTION} />
+    <BaseHead title={pageTitle} description={pageDescription} />
     <style>
       main {
         max-width: 960px;

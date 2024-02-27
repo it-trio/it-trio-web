@@ -19,13 +19,14 @@ const currentEpisodeIndex = episodes.findIndex((episode) => episode.data.guid ==
 const prevEpisodeGuid = episodes[currentEpisodeIndex + 1]?.data.guid;
 const nextEpisodeGuid = episodes[currentEpisodeIndex - 1]?.data.guid;
 
-const { title, description, pubDate, url } = Astro.props;
+const { title, description, pubDate, url, summary } = Astro.props;
 const pageTitle = generatePageTitle(title);
+const pageDescription = summary;
 ---
 
 <html lang="ja">
   <head>
-    <BaseHead title={pageTitle} description={description} />
+    <BaseHead title={pageTitle} description={pageDescription} />
     <link href="https://web-player.art19.com/assets/current.css" media="screen" rel="stylesheet" type="text/css" />
     <style>
       main {
