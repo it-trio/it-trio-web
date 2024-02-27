@@ -7,6 +7,7 @@ import FormattedDate from "../components/FormattedDate.astro";
 import extractUUID from "../utils/extractUUID.ts";
 import LinkifyText from "../components/LinkifyText.astro";
 import ListenOn from "../components/ListenOn.astro";
+import { generatePageTitle } from "../utils/pageTitle";
 
 type Props = CollectionEntry<"episode">["data"];
 
@@ -19,11 +20,12 @@ const prevEpisodeGuid = episodes[currentEpisodeIndex + 1]?.data.guid;
 const nextEpisodeGuid = episodes[currentEpisodeIndex - 1]?.data.guid;
 
 const { title, description, pubDate, url } = Astro.props;
+const pageTitle = generatePageTitle(title);
 ---
 
 <html lang="ja">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={pageTitle} description={description} />
     <link href="https://web-player.art19.com/assets/current.css" media="screen" rel="stylesheet" type="text/css" />
     <style>
       main {

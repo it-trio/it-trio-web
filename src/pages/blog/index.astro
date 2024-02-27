@@ -5,14 +5,17 @@ import Footer from "../../components/Footer.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { getCollection } from "astro:content";
 import FormattedDate from "../../components/FormattedDate.astro";
+import { generatePageTitle } from "../../utils/pageTitle";
 
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const pageTitle = generatePageTitle("ブログ一覧");
 ---
 
 <!doctype html>
 <html lang="ja">
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <BaseHead title={pageTitle} description={SITE_DESCRIPTION} />
     <style>
       main {
         max-width: 960px;

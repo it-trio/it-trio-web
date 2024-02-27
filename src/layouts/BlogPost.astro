@@ -5,15 +5,17 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import stylesUrl from "../styles/blog.css?url";
+import { generatePageTitle } from "../utils/pageTitle";
 
 type Props = CollectionEntry<"blog">["data"];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const pageTitle = generatePageTitle(title);
 ---
 
 <html lang="ja">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={pageTitle} description={description} />
     <link rel="preload" href={stylesUrl} as="style" />
     <link rel="stylesheet" href={stylesUrl} />
   </head>
