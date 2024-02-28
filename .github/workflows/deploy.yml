@@ -12,6 +12,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GTAG_ID: ${{ vars.GTAG_ID }}
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v3
@@ -28,8 +30,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    env:
-      GTAG_ID: ${{ vars.GTAG_ID }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
