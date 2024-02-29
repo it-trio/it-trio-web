@@ -13,7 +13,7 @@ import nabe from "../../images/nabe.webp";
     </div>
     <div id="profile-cheese" class="profile cheese">
       <img class="image" src={cheese.src} alt="ちーずの似顔絵" />
-      <p class="name">ちーず</p>
+      <p class="name -cheese">ちーず</p>
       <p class="explain">名古屋にいる。 元デザイナーで、某お金関係の会社でフロントエンジニアをやっている。 人気者なので、カレンダーのすべてが予定で埋まりがち。 今年の抱負は「#丁寧な暮らし」</p>
     </div>
     <div id="profile-nabe" class="profile nabe">
@@ -73,16 +73,24 @@ import nabe from "../../images/nabe.webp";
     width: 180px;
     height: 180px;
     border-radius: 100%;
+    display: block;
+    margin: 0 auto;
   }
   .name {
     text-align: center;
     font-size: 18px;
     font-weight: 700;
+    margin: 0;
   }
+  .-cheese {
+    margin: -10px 0 0 0;
+  }
+
   .explain {
     font-size: 14px;
     text-align: left;
     white-space: pre-line;
+    margin: 8px;
   }
 </style>
 
