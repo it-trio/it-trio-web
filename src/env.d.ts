@@ -1,6 +1,6 @@
 /// <reference path="../.astro/types.d.ts" />
 interface ImportMetaEnv {
-  readonly GTAG_ID: string;
+  readonly PUBLIC_GTAG_ID: string;
 }
 
 interface ImportMeta {

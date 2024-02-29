@@ -12,7 +12,7 @@ interface Props {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const { title, description, image = "/ogp.png" } = Astro.props;
-const gtagId = import.meta.env.GTAG_ID;
+const gtagId = import.meta.env.PUBLIC_GTAG_ID;
 ---
 
 <!-- Global Metadata -->
@@ -48,7 +48,7 @@ const gtagId = import.meta.env.GTAG_ID;
 
 <!-- Google analytics -->
 <script async src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}></script>
-<script is:inline define:vars={gtagId}>
+<script is:inline define:vars={{ gtagId }}>
   window.dataLayer = window.dataLayer || [];
   function gtag() {
     dataLayer.push(arguments);
