@@ -12,7 +12,7 @@ permissions:
 # 環境変数やシークレット経由で設定するとうまくいかないので直接定義
 # 表に出る値なので問題ないけど開発環境の整備などしたい場合はちゃんと制御する必要がある
 env:
-  PUBLIC_GTAG_ID: G-8J88FGB502
+  PUBLIC_GTAG_ID: "G-8J88FGB502"
 
 jobs:
   build:
