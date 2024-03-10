@@ -40,6 +40,8 @@ const pageDescription = "ITトリオのブログ記事一覧です。";
 
       .entry-image {
         border-radius: 12px;
+        aspect-ratio: 720 / 360;
+        object-fit: cover;
       }
 
       ul li a {
@@ -72,7 +74,7 @@ const pageDescription = "ITトリオのブログ記事一覧です。";
             posts.map((post) => (
               <li>
                 <a href={`/blog/${post.slug}/`}>
-                  <img class="entry-image" width={720} height={360} src={post.data.heroImage} alt="" />
+                  <img class="entry-image" src={post.data.heroImage} alt="サムネイル画像" />
                   <h2 class="title">{post.data.title}</h2>
                   <p class="date">
                     <FormattedDate date={post.data.pubDate} />

@@ -2,7 +2,7 @@
 title: "ITトリオの2023年"
 description: "放送のメモとして使っていたマークダウンファイルをブログ記事に持ってきました"
 pubDate: "Dec 31 2023"
-heroImage: "/blog/what-i-wanna-do/thumbnail.png"
+heroImage: "/blog/recap-2023/thumbnail.png"
 author: "おぐらくん"
 ---
 
