@@ -6,6 +6,7 @@ import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import stylesUrl from "../styles/blog.css?url";
 import { generatePageTitle } from "../utils/pageTitle";
+import ListenOn from "../components/ListenOn.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
@@ -18,6 +19,12 @@ const pageTitle = generatePageTitle(title);
     <BaseHead title={pageTitle} description={description} />
     <link rel="preload" href={stylesUrl} as="style" />
     <link rel="stylesheet" href={stylesUrl} />
+    <style>
+      .please-listen {
+        margin-top: 40px;
+        margin-bottom: 20px;
+      }
+    </style>
   </head>
   <body>
     <Header fixed />
@@ -42,6 +49,9 @@ const pageTitle = generatePageTitle(title);
         </div>
       </article>
     </main>
+    <div class="please-listen">
+      <ListenOn hideRSS />
+    </div>
     <Footer />
   </body>
 </html>
