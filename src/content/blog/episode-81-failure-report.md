@@ -30,7 +30,7 @@ author: "おぐらくん"
 
 ## 障害範囲
 
-2024年3月4日 7時30分から2024年3月4日 9時30分頃までの間に[高卒未経験文系でもインフラエンジニアになれますか？](https://it-trio-no.com/episode/oHwE_xoqar0uq2QzZFS9xQjeAwX8V9PXmQGE7MCkzc4/)を再生したすべてのリスナーに影響がありました。
+2024年3月4日 7時30分から2024年3月4日 14時30分頃までの間に[高卒未経験文系でもインフラエンジニアになれますか？](https://it-trio-no.com/episode/oHwE_xoqar0uq2QzZFS9xQjeAwX8V9PXmQGE7MCkzc4/)を再生開始したすべてのリスナーに影響がありました。
 
 ## 発生原因
 
