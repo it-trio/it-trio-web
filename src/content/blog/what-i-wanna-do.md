@@ -1,5 +1,5 @@
 ---
-title: "これからやりたいこと"
+title: "ITトリオの日常でこれからやりたいこと"
 description: "ITトリオのホームページが完成したのですが、まだまだやりたいことはたくさんあるのでまとめました。"
 pubDate: "Mar 11 2024"
 heroImage: "/blog/what-i-wanna-do/thumbnail.png"
