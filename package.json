@@ -2,7 +2,7 @@
   "name": "it-trio-web",
   "type": "module",
   "private": true,
-  "version": "0.0.1",
+  "version": "1",
   "scripts": {
     "start": "astro dev",
     "build": "astro check && astro build",
