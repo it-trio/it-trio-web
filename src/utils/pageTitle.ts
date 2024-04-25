@@ -1,3 +1,5 @@
+import { SITE_TITLE } from "../consts";
+
 export const generatePageTitle = (name: string) => {
-  return `${name} | ITトリオの日常`;
+  return `${name} - ${SITE_TITLE}`;
 };
