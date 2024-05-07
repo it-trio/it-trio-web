@@ -1,13 +1,13 @@
 ---
 import ListenOn from "../ListenOn.astro";
-import LogoChannel from "../icons/LogoChannel.astro";
+import { Image } from "astro:assets";
 ---
 
 <div class="container">
   <div class="content">
     <p class="appeal">\ 毎週月曜更新! /</p>
     <h1 class="title">
-      <LogoChannel />
+      <Image class="img" src="/logo-channel.svg" width={905} height={100} alt="ITトリオの日常" />
     </h1>
     <p class="explain">3人のエンジニアがカジュアルに学びを深めるポッドキャスト</p>
   </div>
@@ -61,6 +61,11 @@ import LogoChannel from "../icons/LogoChannel.astro";
 
     @media (max-width: 720px) {
       margin-top: 2px;
+    }
+
+    .img {
+      width: 100%;
+      height: auto;
     }
   }
   .explain {
