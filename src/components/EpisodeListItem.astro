@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { removeUnnecessaryNewLines } from "../utils/texts";
 
 interface Props {
@@ -15,7 +16,7 @@ const { title, href, imageSrc, date, description, season, episodeNumber } = Astr
 ---
 
 <a href={href} class="container">
-  <img class="image" width="150" height="150" src={imageSrc} alt=`${title}のサムネイル` />
+  <Image class="image" width="150" height="150" src={imageSrc} alt=`${title}のサムネイル` />
   <div class="info">
     <p class="date">
       <time class="time" datetime={date.toISOString()}>

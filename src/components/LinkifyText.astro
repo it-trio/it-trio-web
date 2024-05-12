@@ -2,14 +2,14 @@
 interface Props {
   text: string;
 }
-const { text, ...props } = Astro.props;
+const { text } = Astro.props;
 
 function replaceUrls(text: string) {
   const urlRegex = /(\bhttps:\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/gi;
   const parts = text.split(urlRegex);
 
   return parts
-    .map((part, i) => {
+    .map((part) => {
       if (urlRegex.test(part)) {
         return `<a href="${part}" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">${part}</a>`;
       } else {
