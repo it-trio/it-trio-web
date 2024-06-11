@@ -5,5 +5,6 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   site: "https://it-trio-no.com",
+  trailingSlash: "always",
   integrations: [mdx(), sitemap()],
 });
