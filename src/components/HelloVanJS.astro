@@ -1,0 +1,43 @@
+---
+type Props = {
+  eventName: string;
+  status?: string;
+};
+
+// declared value can be used in JSX like syntax
+const { eventName, status } = Astro.props;
+const myName = "Yugo Ogura";
+const hobbies = ["programming", "reading", "watching movies", "podcast"];
+---
+
+<!-- JSX like syntax -->
+<div class="container">
+  <h1 class="hello">hello, {eventName}</h1>
+  <h2 class="appeal">my name is {myName}</h2>
+  <div>
+    <h3>My hobbies are:</h3>
+    <ul>
+      {hobbies.map((hobby) => <li>{hobby}</li>)}
+    </ul>
+  </div>
+  {status && <p>status: {status}</p>}
+</div>
+
+<!-- default scoped -->
+<style>
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+  }
+
+  .hello {
+    font-size: 2rem;
+    color: #333;
+  }
+  .appeal {
+    font-size: 1.8rem;
+    color: #333;
+  }
+</style>
