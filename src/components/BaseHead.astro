@@ -9,8 +9,6 @@ interface Props {
   image?: string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-
 const { title, description, image = "/ogp.png" } = Astro.props;
 const gtagId = import.meta.env.PUBLIC_GTAG_ID;
 ---
@@ -23,7 +21,6 @@ const gtagId = import.meta.env.PUBLIC_GTAG_ID;
 <!-- Font preloads -->
 <link rel="preload" href="/fonts/NotoSansJP-VariableFont_wght.ttf" as="font" type="font/woff" crossorigin />
 
-<link rel="canonical" href={canonicalURL} />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <title>{title}</title>
