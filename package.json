@@ -13,7 +13,7 @@
     "fetch": "node scripts/rss-fetch.cjs && pnpm format"
   },
   "dependencies": {
-    "@astrojs/check": "^0.5.10",
+    "@astrojs/check": "^0.7.0",
     "@astrojs/mdx": "^2.2.2",
     "@astrojs/rss": "^4.0.5",
     "@astrojs/sitemap": "^3.1.2",
