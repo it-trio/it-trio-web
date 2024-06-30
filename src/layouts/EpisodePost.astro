@@ -16,8 +16,8 @@ const uuid = extractUUID(Astro.props.url);
 const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const currentEpisodeIndex = episodes.findIndex((episode) => episode.data.guid === Astro.props.guid);
-const prevEpisodeGuid = episodes[currentEpisodeIndex + 1]?.data.guid;
-const nextEpisodeGuid = episodes[currentEpisodeIndex - 1]?.data.guid;
+const prevEpisodeNumber = episodes[currentEpisodeIndex + 1]?.data.number;
+const nextEpisodeNumber = episodes[currentEpisodeIndex - 1]?.data.number;
 
 const { title, description, pubDate, url, summary } = Astro.props;
 const pageTitle = generatePageTitle(title);
@@ -129,10 +129,10 @@ const pageDescription = summary;
       </div>
       <div class="next-prev">
         <div>
-          {nextEpisodeGuid && <a href={`/episode/${nextEpisodeGuid}`}>次のエピソード</a>}
+          {nextEpisodeNumber && <a href={`/episode/${nextEpisodeNumber}`}>次のエピソード</a>}
         </div>
         <div>
-          {prevEpisodeGuid && <a href={`/episode/${prevEpisodeGuid}`}>前のエピソード</a>}
+          {prevEpisodeNumber && <a href={`/episode/${prevEpisodeNumber}`}>前のエピソード</a>}
         </div>
       </div>
     </main>

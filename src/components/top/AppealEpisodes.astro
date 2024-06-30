@@ -14,7 +14,7 @@ const popularEpisode3 = episodes.find((episode) => episode.data.guid === POPULAR
 <div class="container">
   {
     latestEpisode && (
-      <a class="content" href={`/episode/${latestEpisode.data.guid}`}>
+      <a class="content" href={`/episode/${latestEpisode.data.number}`}>
         <img class="image" src={latestEpisode.data.image} alt={latestEpisode.data.title} />
         <p class="title">{latestEpisode.data.title}</p>
       </a>
@@ -22,7 +22,7 @@ const popularEpisode3 = episodes.find((episode) => episode.data.guid === POPULAR
   }
   {
     popularEpisode && (
-      <a class="content" href={`/episode/${popularEpisode.data.guid}`}>
+      <a class="content" href={`/episode/${popularEpisode.data.number}`}>
         <img class="image" src={popularEpisode.data.image} alt={popularEpisode.data.title} />
         <p class="title">{popularEpisode.data.title}</p>
       </a>
@@ -30,7 +30,7 @@ const popularEpisode3 = episodes.find((episode) => episode.data.guid === POPULAR
   }
   {
     popularEpisode2 && (
-      <a class="content" href={`/episode/${popularEpisode2.data.guid}`}>
+      <a class="content" href={`/episode/${popularEpisode2.data.number}`}>
         <img class="image" src={popularEpisode2.data.image} alt={popularEpisode2.data.title} />
         <p class="title">{popularEpisode2.data.title}</p>
       </a>
@@ -38,7 +38,7 @@ const popularEpisode3 = episodes.find((episode) => episode.data.guid === POPULAR
   }
   {
     popularEpisode3 && (
-      <a class="content" href={`/episode/${popularEpisode3.data.guid}`}>
+      <a class="content" href={`/episode/${popularEpisode3.data.number}`}>
         <img class="image" src={popularEpisode3.data.image} alt={popularEpisode3.data.title} />
         <p class="title">{popularEpisode3.data.title}</p>
       </a>

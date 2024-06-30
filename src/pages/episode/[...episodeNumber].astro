@@ -5,7 +5,7 @@ import EpisodePost from "../../layouts/EpisodePost.astro";
 export async function getStaticPaths() {
   const episodes = await getCollection("episode");
   return episodes.map((episode) => ({
-    params: { guid: episode.data.guid },
+    params: { episodeNumber: episode.data.number },
     props: episode,
   }));
 }

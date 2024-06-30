@@ -51,7 +51,7 @@ const pageDescription = "ポッドキャスト「ITトリオの日常」のエ�
           {
             episodes.map((episode) => (
               <li>
-                <EpisodeListItem title={episode.data.title} href={`/episode/${episode.data.guid}/`} imageSrc={episode.data.image} date={episode.data.pubDate} description={episode.data.summary} season={episode.data.season} episodeNumber={episode.data.number} />
+                <EpisodeListItem title={episode.data.title} href={`/episode/${episode.data.number}`} imageSrc={episode.data.image} date={episode.data.pubDate} description={episode.data.summary} season={episode.data.season} episodeNumber={episode.data.number} />
               </li>
             ))
           }
