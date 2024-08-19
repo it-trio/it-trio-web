@@ -19,7 +19,7 @@
     "@astrojs/sitemap": "^3.1.2",
     "astro": "^4.11.5",
     "rss-parser": "^3.13.0",
-    "typescript": "^5.4.3"
+    "typescript": "^5.5.4"
   },
   "devDependencies": {
     "prettier": "^3.3.3",
