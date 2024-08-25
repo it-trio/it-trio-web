@@ -1,6 +1,6 @@
 ---
 
-const currentUrl = new URL(Astro.url.pathname, Astro.site);
+const currentUrl = new URL(Astro.url.pathname.replace(/\.html$/, ''), Astro.site);
 // エンコードされた https://x.com/intent/post?url=${currentUrl}&hashtags=ITトリオ にする
 const twitterShareUrl = `https://x.com/intent/post?url=${encodeURIComponent(currentUrl.toString())}&hashtags=ITトリオ`;
 ---
