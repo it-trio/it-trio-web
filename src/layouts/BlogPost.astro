@@ -7,6 +7,7 @@ import FormattedDate from "../components/FormattedDate.astro";
 import stylesUrl from "../styles/blog.css?url";
 import { generatePageTitle } from "../utils/pageTitle";
 import ListenOn from "../components/ListenOn.astro";
+import Hatebu from "../components/Hatebu.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
@@ -19,12 +20,6 @@ const pageTitle = generatePageTitle(title);
     <BaseHead title={pageTitle} description={description} image={heroImage} />
     <link rel="preload" href={stylesUrl} as="style" />
     <link rel="stylesheet" href={stylesUrl} />
-    <style>
-      .please-listen {
-        margin-top: 40px;
-        margin-bottom: 20px;
-      }
-    </style>
   </head>
   <body>
     <Header fixed />
@@ -48,6 +43,10 @@ const pageTitle = generatePageTitle(title);
           <slot />
         </div>
       </article>
+      <div class="hatebu">
+        <hr class="border" />
+        <Hatebu />
+      </div>
     </main>
     <div class="please-listen">
       <ListenOn hideRSS />
@@ -55,3 +54,19 @@ const pageTitle = generatePageTitle(title);
     <Footer />
   </body>
 </html>
+
+<style>
+  .please-listen {
+        margin-top: 40px;
+        margin-bottom: 20px;
+      }
+  .hatebu {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 40px;
+    .border {
+      width: 60px
+    }
+  }
+</style>
