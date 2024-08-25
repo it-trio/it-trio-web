@@ -8,6 +8,7 @@ import extractUUID from "../utils/extractUUID.ts";
 import LinkifyText from "../components/LinkifyText.astro";
 import ListenOn from "../components/ListenOn.astro";
 import { generatePageTitle } from "../utils/pageTitle";
+import Hatebu from "../components/Hatebu.astro";
 
 type Props = CollectionEntry<"episode">["data"];
 
@@ -89,6 +90,14 @@ const pageDescription = summary;
           text-decoration: underline;
         }
       }
+      .hatebu {
+        display: grid;
+        place-items: center;
+
+        .border {
+          width: 60px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -119,6 +128,10 @@ const pageDescription = summary;
         <h1 class="title">{title}</h1>
         <div class="listenOn">
           <ListenOn hideRSS />
+        </div>
+        <div class="hatebu">
+          <hr class="border" />
+          <Hatebu />
         </div>
         <hr class="border" />
         <div>
