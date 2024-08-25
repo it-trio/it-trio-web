@@ -18,7 +18,7 @@ const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.
 
 const currentEpisodeIndex = episodes.findIndex((episode) => episode.data.guid === Astro.props.guid);
 const episodeMetas = await getCollection("episodeMeta")
-const episodeMeta = episodeMetas.find(meta => meta.data.episodeId === Astro.props.guid)
+const episodeMeta = episodeMetas.find(meta => meta.id === Astro.props.guid)
 const prevEpisodeNumber = episodes[currentEpisodeIndex + 1]?.data.number;
 const nextEpisodeNumber = episodes[currentEpisodeIndex - 1]?.data.number;
 

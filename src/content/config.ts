@@ -34,7 +34,6 @@ const episode = defineCollection({
 const episodeMeta = defineCollection({
   type: "data",
   schema: z.object({
-    episodeId: z.string(),
     ogImagePath: z.string(),
   }),
 });
