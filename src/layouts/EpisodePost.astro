@@ -9,6 +9,7 @@ import LinkifyText from "../components/LinkifyText.astro";
 import ListenOn from "../components/ListenOn.astro";
 import { generatePageTitle } from "../utils/pageTitle";
 import Hatebu from "../components/Hatebu.astro";
+import PostOnX from "../components/PostOnX.astro";
 
 type Props = CollectionEntry<"episode">["data"];
 
@@ -93,12 +94,17 @@ const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined
           text-decoration: underline;
         }
       }
-      .hatebu {
+      .sns {
         display: grid;
         place-items: center;
 
         .border {
           width: 60px;
+        }
+        .icons {
+          display: flex;
+          gap: 12px;
+          align-items: center;
         }
       }
     </style>
@@ -132,9 +138,12 @@ const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined
         <div class="listenOn">
           <ListenOn hideRSS />
         </div>
-        <div class="hatebu">
+        <div class="sns">
           <hr class="border" />
-          <Hatebu />
+          <div class="icons" >
+            <Hatebu />
+            <PostOnX />
+          </div>
         </div>
         <hr class="border" />
         <div>

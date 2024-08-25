@@ -8,8 +8,13 @@ import stylesUrl from "../styles/blog.css?url";
 import { generatePageTitle } from "../utils/pageTitle";
 import ListenOn from "../components/ListenOn.astro";
 import Hatebu from "../components/Hatebu.astro";
+import PostOnX from "../components/PostOnX.astro";
 
 type Props = CollectionEntry<"blog">["data"];
+
+const currentUrl = new URL(Astro.url.pathname, Astro.site);
+// エンコードされた https://x.com/intent/post?url=${currentUrl}&hashtags=ITトリオ にする
+const twitterShareUrl = `https://x.com/intent/post?url=${encodeURIComponent(currentUrl.toString())}&hashtags=ITトリオ`;
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 const pageTitle = generatePageTitle(title);
@@ -45,7 +50,10 @@ const pageTitle = generatePageTitle(title);
       </article>
       <div class="hatebu">
         <hr class="border" />
-        <Hatebu />
+        <div class="icons">
+          <Hatebu />
+          <PostOnX />
+        </div>
       </div>
     </main>
     <div class="please-listen">
@@ -67,6 +75,11 @@ const pageTitle = generatePageTitle(title);
     margin-top: 40px;
     .border {
       width: 60px
+    }
+    .icons {
+      display: flex;
+      gap: 12px;
+      align-items: center;
     }
   }
 </style>
