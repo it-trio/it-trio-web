@@ -42,7 +42,7 @@ const gtagId = import.meta.env.PUBLIC_GTAG_ID;
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
 <!-- Google analytics -->
-<script async src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}></script>
+<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gtagId}`}></script>
 <script is:inline define:vars={{ gtagId }}>
   window.dataLayer = window.dataLayer || [];
   function gtag() {
@@ -54,4 +54,4 @@ const gtagId = import.meta.env.PUBLIC_GTAG_ID;
 </script>
 
 <!-- hatebu -->
-<script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<script is:inline type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>

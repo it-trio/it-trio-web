@@ -31,4 +31,12 @@ const episode = defineCollection({
   }),
 });
 
-export const collections = { blog, episode };
+const episodeMeta = defineCollection({
+  type: "data",
+  schema: z.object({
+    episodeId: z.string(),
+    ogImagePath: z.string(),
+  }),
+});
+
+export const collections = { blog, episode, episodeMeta };
