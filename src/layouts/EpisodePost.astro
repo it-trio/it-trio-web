@@ -17,17 +17,20 @@ const uuid = extractUUID(Astro.props.url);
 const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const currentEpisodeIndex = episodes.findIndex((episode) => episode.data.guid === Astro.props.guid);
+const episodeMetas = await getCollection("episodeMeta")
+const episodeMeta = episodeMetas.find(meta => meta.data.episodeId === Astro.props.guid)
 const prevEpisodeNumber = episodes[currentEpisodeIndex + 1]?.data.number;
 const nextEpisodeNumber = episodes[currentEpisodeIndex - 1]?.data.number;
 
 const { title, description, pubDate, url, summary } = Astro.props;
 const pageTitle = generatePageTitle(title);
 const pageDescription = summary;
+const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined
 ---
 
 <html lang="ja">
   <head>
-    <BaseHead title={pageTitle} description={pageDescription} />
+    <BaseHead title={pageTitle} description={pageDescription} image={ogImagePath} />
     <link href="https://web-player.art19.com/assets/current.css" media="screen" rel="stylesheet" type="text/css" />
     <style>
       main {
