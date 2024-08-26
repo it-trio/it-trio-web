@@ -142,7 +142,7 @@ const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined;
           <hr class="border" />
           <div class="icons">
             <Hatebu />
-            <PostOnX />
+            <PostOnX text={pageTitle} />
           </div>
         </div>
         <hr class="border" />
@@ -162,6 +162,6 @@ const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined;
       </div>
     </main>
     <Footer />
-    <script src="https://web-player.art19.com/assets/current.js" type="text/javascript"></script>
+    <script is:inline src="https://web-player.art19.com/assets/current.js" type="text/javascript"></script>
   </body>
 </html>

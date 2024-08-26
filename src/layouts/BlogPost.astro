@@ -12,10 +12,6 @@ import PostOnX from "../components/PostOnX.astro";
 
 type Props = CollectionEntry<"blog">["data"];
 
-const currentUrl = new URL(Astro.url.pathname, Astro.site);
-// エンコードされた https://x.com/intent/post?url=${currentUrl}&hashtags=ITトリオ にする
-const twitterShareUrl = `https://x.com/intent/post?url=${encodeURIComponent(currentUrl.toString())}&hashtags=ITトリオ`;
-
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 const pageTitle = generatePageTitle(title);
 ---
@@ -52,7 +48,7 @@ const pageTitle = generatePageTitle(title);
         <hr class="border" />
         <div class="icons">
           <Hatebu />
-          <PostOnX />
+          <PostOnX text={pageTitle} />
         </div>
       </div>
     </main>
@@ -60,24 +56,25 @@ const pageTitle = generatePageTitle(title);
       <ListenOn hideRSS />
     </div>
     <Footer />
-  </body><style>
-    .please-listen {
-      margin-top: 40px;
-      margin-bottom: 20px;
-    }
-    .hatebu {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      margin-top: 40px;
-      .border {
-        width: 60px;
+    <style>
+      .please-listen {
+        margin-top: 40px;
+        margin-bottom: 20px;
       }
-      .icons {
+      .hatebu {
         display: flex;
-        gap: 12px;
-        align-items: center;
+        flex-direction: column;
+        gap: 24px;
+        margin-top: 40px;
+        .border {
+          width: 60px;
+        }
+        .icons {
+          display: flex;
+          gap: 12px;
+          align-items: center;
+        }
       }
-    }
-  </style>
+    </style>
+  </body>
 </html>
