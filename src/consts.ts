@@ -1,3 +1,4 @@
+export const NAME = "ITトリオの日常";
 export const SITE_TITLE = "ITトリオの日常 公式サイト";
 export const SITE_DESCRIPTION =
   "ITトリオの日常は、エンジニア3人がカジュアルに学びを深めるポッドキャストです。日本とカナダを繋いで毎週月曜日に更新しています。Spotify、Apple Podcast、YouTubeなどの各種プラットフォームで配信中です。";

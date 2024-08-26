@@ -1,5 +1,5 @@
-import { SITE_TITLE } from "../consts";
+import { NAME } from "../consts";
 
 export const generatePageTitle = (name: string) => {
-  return `${name} - ${SITE_TITLE}`;
+  return `${name} - ${NAME}`;
 };
