@@ -3,7 +3,7 @@ type Props = {
   text: string;
 };
 const currentUrl = new URL(Astro.url.pathname.replace(/\.html$/, ""), Astro.site);
-const twitterShareUrl = `https://twitter.com/intent/tweet?url=${currentUrl}&text${encodeURIComponent(Astro.props.text)}=&hashtags=ITトリオ`;
+const twitterShareUrl = `https://twitter.com/intent/tweet?url=${currentUrl}&text=${encodeURIComponent(Astro.props.text)}=&hashtags=ITトリオ`;
 ---
 
 <a class="share" href={twitterShareUrl} aria-label="Twitterでシェア" target="_blank">
