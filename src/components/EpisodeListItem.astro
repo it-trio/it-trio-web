@@ -13,15 +13,16 @@ interface Props {
 }
 
 const { title, href, imageSrc, date, description, season, episodeNumber } = Astro.props;
+const japanTime = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
 ---
 
 <a href={href} class="container">
   <Image class="image" width="150" height="150" src={imageSrc} alt=`${title}のサムネイル` />
   <div class="info">
     <p class="date">
-      <time class="time" datetime={date.toISOString()}>
+      <time class="time" datetime={japanTime.toISOString()}>
         {
-          date.toLocaleDateString("ja-JP", {
+          japanTime.toLocaleDateString("ja-JP", {
             year: "numeric",
             month: "short",
             day: "numeric",

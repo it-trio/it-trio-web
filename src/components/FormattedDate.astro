@@ -4,11 +4,12 @@ interface Props {
 }
 
 const { date } = Astro.props;
+const japanTime = new Date(date.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
 ---
 
-<time datetime={date.toISOString()}>
+<time datetime={japanTime.toISOString()}>
   {
-    date.toLocaleDateString("ja-JP", {
+    japanTime.toLocaleDateString("ja-JP", {
       year: "numeric",
       month: "short",
       day: "numeric",
