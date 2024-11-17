@@ -7,7 +7,7 @@ import nabe from "../../images/nabe.webp";
 <div class="container">
   <div class="content">
     <div id="profile-ogura" class="profile ogura">
-      <img class="image" src={ogura.src} alt="おぐらくんの似顔絵" />
+      <img class="image -ogura" src={ogura.src} alt="おぐらくんの似顔絵" />
       <p class="name">おぐらくん</p>
       <p class="explain">カナダにいる。 エンジニア歴はアルバイトを入れると7年くらいで、2024年にカナダへ移住して、海外就職にチャレンジ中。 「ITトリオの日常」の編集や更新、スケジュール調整など、色々やっている。</p>
     </div>
@@ -27,14 +27,7 @@ import nabe from "../../images/nabe.webp";
 <style>
   .container {
   }
-  .trio {
-    padding: 1rem 1rem;
-    border-top-right-radius: 2px;
-    border-top-left-radius: 2px;
-    font-size: 1.8rem;
-    /* color: var(--accent-white);
-    background-color: var(--accent); */
-  }
+
   .content {
     display: grid;
     border-radius: 4px;
@@ -60,37 +53,44 @@ import nabe from "../../images/nabe.webp";
       transform 0.6s ease;
   }
   .ogura {
-    background-color: var(--ogura);
+    background-color: var(--accent);
   }
   .cheese {
-    background-color: var(--cheese);
+    background-color: var(--accent);
   }
   .nabe {
-    background-color: var(--nabe);
+    background-color: var(--accent);
   }
 
   .image {
     width: 180px;
     height: 180px;
-    border-radius: 100%;
     display: block;
     margin: 0 auto;
+
+    &.-ogura {
+      width: 170px;
+      height: 170px;
+    }
   }
   .name {
     text-align: center;
     font-size: 18px;
     font-weight: 700;
-    margin: 0;
+    margin-top: 4px;
+    color: var(--accent-white);
   }
   .-cheese {
-    margin: -10px 0 0 0;
+    /* margin-top: -5px; */
   }
 
   .explain {
     font-size: 14px;
+    line-height: 1.4;
     text-align: left;
     white-space: pre-line;
-    margin: 8px;
+    margin: 12px;
+    color: var(--accent-white);
   }
 </style>
 
