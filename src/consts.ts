@@ -12,6 +12,7 @@ export const AMAZON_MUSIC_SHOW_LINK =
   "https://music.amazon.co.jp/podcasts/fdfe7e3f-4ddb-4717-9501-414e5dabcf3b/itトリオの日常-エンジニア3人がカジュアルに学びを深めるラジオ";
 export const YOUTUBE_MUSIC_SHOW_LINK =
   "https://music.youtube.com/playlist?list=PLqtv1UJuRQssCX_himpcWZLalPSeHIcR3&si=7FplzKGZJZp2Gci2";
+export const YOUTUBE_SHOW_LINK = "https://www.youtube.com/@it-trio";
 
 export const GOOGLE_FORM_LINK = "https://forms.gle/sqzWk2Yb79cMvFGg8";
 

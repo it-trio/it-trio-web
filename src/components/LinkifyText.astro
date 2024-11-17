@@ -12,9 +12,8 @@ function replaceUrls(text: string) {
     .map((part) => {
       if (urlRegex.test(part)) {
         return `<a href="${part}" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">${part}</a>`;
-      } else {
-        return part;
       }
+      return part;
     })
     .join("");
 }
