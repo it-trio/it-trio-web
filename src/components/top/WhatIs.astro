@@ -3,13 +3,22 @@ import LogoChannel from "../icons/LogoChannel.astro";
 ---
 
 <div>
+  <img src="/thumbnail.jpg" alt="ITトリオの日常サムネイル" class="thumbnail" />
   <p class="content">
     <span class="icon"><LogoChannel /></span>は、&#10;3人のエンジニアが雑談ミーティングをするポッドキャストです。&#10;ゆるく楽しく聴いていると、&#10;いつの間にか学びが得られちゃう。&#10;そんな番組を目指しています。&#10;日本🇯🇵とカナダ🇨🇦を繋いで&#10;毎週月曜日+αで新エピソードを更新中です。
   </p>
 </div>
 
 <style>
+  .thumbnail {
+    display: block;
+    margin: 24px auto 0;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
   .content {
+    margin-top: 24px;
     font-size: 1.2rem;
     line-height: 1.8;
     white-space: pre-line;
