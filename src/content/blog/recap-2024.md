@@ -22,6 +22,8 @@ author: "おぐらくん"
 - 初スポンサーエピソード([RoadVoice](https://www.honda.co.jp/roadvoice/))
 - [日本ポッドキャスト協会に紹介ゲスト出演](https://podcasting.jp/weekly_recommend.html)
 - 「ウラガワ」シリーズの開始
+- HP作成
+- サムネイルリニューアル
 - おぐらくんがカナダへ移住
 - なべちゃんが起業
 
