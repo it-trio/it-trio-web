@@ -105,3 +105,4 @@ YouTube 27
 
 ![Spotifyのフォロワー推移](/blog/recap-2024/spotify.png)
 ![Apple Podcastのフォロワー推移(全期間)](/blog/recap-2024/apple.png)
+![配信ツールの再生回数データ(12/29時点)](/blog/recap-2024/playCount.png)
