@@ -1,7 +1,7 @@
 export const NAME = "ITトリオ ~カナダと名古屋のエンジニア談義~";
 export const SITE_TITLE = "ITトリオ 公式サイト";
 export const SITE_DESCRIPTION =
-  "ITトリオはカナダと名古屋でユニークなキャリアを築く3人のITエンジニアが日々の学びやトレンドをシェアしてゆるく学びを深めるラジオです。隔週月曜日に更新しています。Spotify、Apple Podcast、YouTubeなどの各種プラットフォームで配信中です。";
+  "カナダと名古屋でユニークなキャリアを築く3人のITエンジニアがゆるく学びを深めるポッドキャストです。他では聞けない個性豊かなエンジニア談義をお楽しみください！隔週月曜日+αで更新中。Spotify、Apple Podcast、YouTubeなどの各種プラットフォームで配信中です。";
 
 export const RSS_FEED_URL = "https://rss.art19.com/it-pitpa";
 export const SPOTIFY_SHOW_LINK =
@@ -9,7 +9,7 @@ export const SPOTIFY_SHOW_LINK =
 export const APPLE_PODCAST_SHOW_LINK =
   "https://podcasts.apple.com/jp/podcast/it%E3%83%88%E3%83%AA%E3%82%AA%E3%81%AE%E6%97%A5%E5%B8%B8-%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A23%E4%BA%BA%E3%81%8C%E3%82%AB%E3%82%B8%E3%83%A5%E3%82%A2%E3%83%AB%E3%81%AB%E5%AD%A6%E3%81%B3%E3%82%92%E6%B7%B1%E3%82%81%E3%82%8B%E3%83%A9%E3%82%B8%E3%82%AA/id1644482809";
 export const AMAZON_MUSIC_SHOW_LINK =
-  "https://music.amazon.co.jp/podcasts/fdfe7e3f-4ddb-4717-9501-414e5dabcf3b/itトリオの日常-エンジニア3人がカジュアルに学びを深めるラジオ";
+  "https://music.amazon.co.jp/podcasts/fdfe7e3f-4ddb-4717-9501-414e5dabcf3b/";
 export const YOUTUBE_MUSIC_SHOW_LINK =
   "https://music.youtube.com/playlist?list=PLqtv1UJuRQssCX_himpcWZLalPSeHIcR3&si=7FplzKGZJZp2Gci2";
 export const YOUTUBE_SHOW_LINK = "https://www.youtube.com/@it-trio";
