@@ -1,4 +1,4 @@
-export const NAME = "ITトリオ ~カナダと名古屋のエンジニア談義~";
+export const NAME = "ITトリオ ~エンジニア3人ゆる学びラジオ~";
 export const SITE_TITLE = "ITトリオ 公式サイト";
 export const SITE_DESCRIPTION =
   "カナダと名古屋でユニークなキャリアを築く3人のITエンジニアがゆるく学びを深めるポッドキャストです。他では聞けない個性豊かなエンジニア談義をお楽しみください！隔週月曜日+αで更新中。Spotify、Apple Podcast、YouTubeなどの各種プラットフォームで配信中です。";
