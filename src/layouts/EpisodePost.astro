@@ -10,6 +10,7 @@ import ListenOn from "../components/ListenOn.astro";
 import { generatePageTitle } from "../utils/pageTitle";
 import Hatebu from "../components/Hatebu.astro";
 import PostOnX from "../components/PostOnX.astro";
+import Transcription from "../components/Transcription.astro";
 
 type Props = CollectionEntry<"episode">["data"];
 
@@ -22,6 +23,10 @@ const episodeMetas = await getCollection("episodeMeta");
 const episodeMeta = episodeMetas.find((meta) => meta.id === Astro.props.guid);
 const prevEpisodeNumber = episodes[currentEpisodeIndex + 1]?.data.number;
 const nextEpisodeNumber = episodes[currentEpisodeIndex - 1]?.data.number;
+
+// Get transcription if available
+const transcriptions = await getCollection("transcription");
+const transcription = transcriptions.find((t) => t.id === Astro.props.guid);
 
 const { title, description, pubDate, url, summary } = Astro.props;
 const pageTitle = generatePageTitle(title);
@@ -151,6 +156,7 @@ const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined;
             <LinkifyText text={description} />
           </div>
         </div>
+        {transcription && <Transcription transcription={transcription.data} />}
       </div>
       <div class="next-prev">
         <div>

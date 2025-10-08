@@ -1,0 +1,66 @@
+name: Transcribe Episode
+
+on:
+  workflow_dispatch:
+    inputs:
+      episode_number:
+        description: "Episode number to transcribe"
+        required: true
+        type: string
+
+jobs:
+  transcribe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
+
+      # withastro/action@v1と同じ設定にしてキャッシュを共有する
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: "latest"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
+
+      - name: Install
+        shell: "bash"
+        working-directory: "."
+        run: pnpm install
+
+      - name: Run transcription
+        env:
+          ASSEMBLYAI_API_KEY: ${{ secrets.ASSEMBLYAI_API_KEY }}
+        run: pnpm run transcribe ${{ inputs.episode_number }}
+
+      - name: Format files
+        run: pnpm format
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
+          commit-message: Add transcription for episode ${{ inputs.episode_number }}
+          committer: GitHub <noreply@github.com>
+          author: GitHub <noreply@github.com>
+          signoff: false
+          branch: transcribe-episode-${{ inputs.episode_number }}
+          delete-branch: true
+          title: "Add transcription for episode ${{ inputs.episode_number }}"
+          body: |
+            This PR adds transcription for episode ${{ inputs.episode_number }}.
+
+            The transcription includes:
+            - Speaker identification
+            - Timestamps
+            - Full text of the episode
+          labels: transcription
+          draft: false

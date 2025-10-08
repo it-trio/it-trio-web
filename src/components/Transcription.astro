@@ -1,0 +1,122 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  transcription: CollectionEntry<"transcription">["data"];
+}
+
+const { transcription } = Astro.props;
+const segments = transcription.segments;
+---
+
+<details class="transcription">
+  <summary class="transcription-header">
+    <h2>文字起こし</h2>
+    <span class="toggle-icon">▼</span>
+  </summary>
+  <div class="transcription-content">
+    {
+      segments.map((segment) => (
+        <div class="segment">
+          <div class="segment-header">
+            <span class="speaker">{segment.speaker}</span>
+            <span class="timestamp">{segment.timestamp}</span>
+          </div>
+          <p class="segment-text">{segment.text}</p>
+        </div>
+      ))
+    }
+  </div>
+</details>
+
+<style>
+  .transcription {
+    margin-top: 24px;
+    border: 1px solid rgb(var(--gray-light));
+    border-radius: 8px;
+    padding: 0;
+  }
+
+  .transcription-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+
+  .transcription-header::-webkit-details-marker {
+    display: none;
+  }
+
+  .transcription-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .toggle-icon {
+    transition: transform 0.3s ease;
+    font-size: 0.875rem;
+    color: rgb(var(--gray));
+  }
+
+  .transcription[open] .toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .transcription-content {
+    padding: 0 20px 20px 20px;
+    border-top: 1px solid rgb(var(--gray-light));
+  }
+
+  .segment {
+    margin-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .segment:not(:last-child) {
+    border-bottom: 1px solid rgb(var(--gray-light));
+  }
+
+  .segment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .speaker {
+    font-weight: 600;
+    color: rgb(var(--accent));
+    font-size: 0.875rem;
+  }
+
+  .timestamp {
+    font-size: 0.75rem;
+    color: rgb(var(--gray));
+    font-family: monospace;
+  }
+
+  .segment-text {
+    margin: 0;
+    line-height: 1.6;
+    color: rgb(var(--black));
+  }
+
+  @media (max-width: 720px) {
+    .transcription-header {
+      padding: 12px 16px;
+    }
+
+    .transcription-header h2 {
+      font-size: 1.125rem;
+    }
+
+    .transcription-content {
+      padding: 0 16px 16px 16px;
+    }
+  }
+</style>
