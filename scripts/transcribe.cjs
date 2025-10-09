@@ -111,7 +111,7 @@ async function waitForTranscription(transcriptId) {
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     console.log(
-      `Checking transcription status (attempt ${attempt}/${maxAttempts})...`,
+      `Checking transcription status (attempt ${attempt}/${maxAttempts})...`
     );
 
     const response = await fetch(
@@ -120,12 +120,12 @@ async function waitForTranscription(transcriptId) {
         headers: {
           authorization: ASSEMBLYAI_API_KEY,
         },
-      },
+      }
     );
 
     if (!response.ok) {
       throw new Error(
-        `Failed to get transcription status: ${response.statusText}`,
+        `Failed to get transcription status: ${response.statusText}`
       );
     }
 
@@ -141,7 +141,7 @@ async function waitForTranscription(transcriptId) {
     // If not the last attempt, wait before trying again
     if (attempt < maxAttempts) {
       console.log(
-        `Status: ${data.status}, waiting ${pollingInterval / 1000} seconds...`,
+        `Status: ${data.status}, waiting ${pollingInterval / 1000} seconds...`
       );
       await new Promise((resolve) => setTimeout(resolve, pollingInterval));
     }
@@ -149,7 +149,7 @@ async function waitForTranscription(transcriptId) {
 
   // If we've exhausted all attempts without completion
   throw new Error(
-    `Transcription did not complete after ${maxAttempts} attempts. Please check the transcription status manually using the transcript ID: ${transcriptId}`,
+    `Transcription did not complete after ${maxAttempts} attempts. Please check the transcription status manually using the transcript ID: ${transcriptId}`
   );
 }
 
@@ -189,7 +189,7 @@ function formatTranscription(transcriptionData) {
 function saveTranscription(episodeGuid, transcriptionData) {
   const transcriptionsDir = path.join(
     __dirname,
-    "../src/content/transcription",
+    "../src/content/transcription"
   );
 
   // Create directory if it doesn't exist
@@ -224,8 +224,7 @@ function saveTranscription(episodeGuid, transcriptionData) {
     const uploadUrl = await uploadAudio(episode.url);
 
     // Submit transcription request
-    // const transcriptId = await submitTranscription(uploadUrl);
-    const transcriptId = "5b6603dc-fa03-40f2-9dd6-a087e1fb9367";
+    const transcriptId = await submitTranscription(uploadUrl);
     console.log(`Transcription ID: ${transcriptId}`);
 
     // Wait for transcription to complete
