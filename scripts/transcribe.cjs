@@ -106,7 +106,14 @@ async function submitTranscription(audioUrl) {
 async function waitForTranscription(transcriptId) {
   console.log("Waiting for transcription to complete...");
 
-  while (true) {
+  const maxAttempts = 5;
+  const pollingInterval = 5000; // 5 seconds
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    console.log(
+      `Checking transcription status (attempt ${attempt}/${maxAttempts})...`,
+    );
+
     const response = await fetch(
       `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
       {
@@ -131,9 +138,19 @@ async function waitForTranscription(transcriptId) {
       throw new Error(`Transcription failed: ${data.error}`);
     }
 
-    // Wait 5 seconds before checking again
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    // If not the last attempt, wait before trying again
+    if (attempt < maxAttempts) {
+      console.log(
+        `Status: ${data.status}, waiting ${pollingInterval / 1000} seconds...`,
+      );
+      await new Promise((resolve) => setTimeout(resolve, pollingInterval));
+    }
   }
+
+  // If we've exhausted all attempts without completion
+  throw new Error(
+    `Transcription did not complete after ${maxAttempts} attempts. Please check the transcription status manually using the transcript ID: ${transcriptId}`,
+  );
 }
 
 /**
