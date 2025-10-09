@@ -101,24 +101,12 @@ async function submitTranscription(audioUrl) {
 }
 
 /**
- * Poll for transcription result
+ * Wait for transcription to complete
  */
-async function pollTranscription(transcriptId) {
+async function waitForTranscription(transcriptId) {
   console.log("Waiting for transcription to complete...");
 
-  const maxWaitTime = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
-  const pollingInterval = 5000; // 5 seconds
-  const startTime = Date.now();
-
   while (true) {
-    // Check if we've exceeded the maximum wait time
-    const elapsedTime = Date.now() - startTime;
-    if (elapsedTime > maxWaitTime) {
-      throw new Error(
-        `Transcription timeout: exceeded maximum wait time of ${maxWaitTime / 1000 / 60} minutes`,
-      );
-    }
-
     const response = await fetch(
       `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
       {
@@ -137,19 +125,14 @@ async function pollTranscription(transcriptId) {
     const data = await response.json();
 
     if (data.status === "completed") {
-      console.log("\nTranscription completed successfully!");
+      console.log("Transcription completed!");
       return data;
     } else if (data.status === "error") {
       throw new Error(`Transcription failed: ${data.error}`);
     }
 
-    // Log current status
-    console.log(
-      `Status: ${data.status} (elapsed: ${Math.floor(elapsedTime / 1000)}s)`,
-    );
-
-    // Wait before polling again
-    await new Promise((resolve) => setTimeout(resolve, pollingInterval));
+    // Wait 5 seconds before checking again
+    await new Promise((resolve) => setTimeout(resolve, 5000));
   }
 }
 
@@ -227,8 +210,8 @@ function saveTranscription(episodeGuid, transcriptionData) {
     const transcriptId = await submitTranscription(uploadUrl);
     console.log(`Transcription ID: ${transcriptId}`);
 
-    // Poll for result
-    const transcriptionData = await pollTranscription(transcriptId);
+    // Wait for transcription to complete
+    const transcriptionData = await waitForTranscription(transcriptId);
 
     // Format and save transcription
     const formattedData = formatTranscription(transcriptionData);
