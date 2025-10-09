@@ -106,7 +106,19 @@ async function submitTranscription(audioUrl) {
 async function pollTranscription(transcriptId) {
   console.log("Waiting for transcription to complete...");
 
+  const maxWaitTime = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+  const pollingInterval = 5000; // 5 seconds
+  const startTime = Date.now();
+
   while (true) {
+    // Check if we've exceeded the maximum wait time
+    const elapsedTime = Date.now() - startTime;
+    if (elapsedTime > maxWaitTime) {
+      throw new Error(
+        `Transcription timeout: exceeded maximum wait time of ${maxWaitTime / 1000 / 60} minutes`,
+      );
+    }
+
     const response = await fetch(
       `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
       {
@@ -125,15 +137,19 @@ async function pollTranscription(transcriptId) {
     const data = await response.json();
 
     if (data.status === "completed") {
-      console.log("Transcription completed successfully!");
+      console.log("\nTranscription completed successfully!");
       return data;
     } else if (data.status === "error") {
       throw new Error(`Transcription failed: ${data.error}`);
     }
 
-    // Wait 5 seconds before polling again
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    process.stdout.write(".");
+    // Log current status
+    console.log(
+      `Status: ${data.status} (elapsed: ${Math.floor(elapsedTime / 1000)}s)`,
+    );
+
+    // Wait before polling again
+    await new Promise((resolve) => setTimeout(resolve, pollingInterval));
   }
 }
 
