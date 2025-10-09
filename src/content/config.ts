@@ -38,4 +38,20 @@ const episodeMeta = defineCollection({
   }),
 });
 
-export const collections = { blog, episode, episodeMeta };
+const transcription = defineCollection({
+  type: "data",
+  schema: z.object({
+    segments: z.array(
+      z.object({
+        speaker: z.string(),
+        text: z.string(),
+        timestamp: z.string(),
+        start: z.number(),
+        end: z.number(),
+      }),
+    ),
+    language: z.string(),
+  }),
+});
+
+export const collections = { blog, episode, episodeMeta, transcription };
