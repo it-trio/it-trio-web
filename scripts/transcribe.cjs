@@ -106,8 +106,8 @@ async function submitTranscription(audioUrl) {
 async function waitForTranscription(transcriptId) {
   console.log("Waiting for transcription to complete...");
 
-  const maxAttempts = 15;
-  const pollingInterval = 15000; // 15 seconds
+  const maxAttempts = 20;
+  const pollingInterval = 30000; // 30 seconds
 
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     console.log(
