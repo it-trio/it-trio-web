@@ -116,9 +116,60 @@ ASSEMBLYAI_API_KEY=your_api_key_here node scripts/transcribe.cjs 18
 
 AssemblyAIの料金は音声の長さに基づきます。最新の料金情報は[AssemblyAIの料金ページ](https://www.assemblyai.com/pricing)を確認してください。
 
+## 話者名の変更
+
+文字起こしが完了した後、PRのコメントで話者名を一括変更できます。
+
+### 使い方
+
+1. 文字起こしのPRが作成されたら、そのPRにコメントを投稿します
+2. コメントの形式：
+   ```
+   speaker おぐらくん ちーず なべちゃん
+   ```
+3. GitHub Actionが自動的に実行され、以下のように置換されます：
+   - Speaker A → おぐらくん
+   - Speaker B → ちーず
+   - Speaker C → なべちゃん
+
+### 仕組み
+
+- `speaker` で始まるコメントを検出
+- スペース区切りで話者名を取得
+- PR内のすべての文字起こしJSONファイルを更新
+- 変更を自動的にコミット＆プッシュ
+- 完了後、コメントで結果を通知
+
+### 例
+
+PRに以下のようにコメント：
+```
+speaker おぐらくん ちーず なべちゃん
+```
+
+すると、JSONファイル内の：
+```json
+{
+  "speaker": "A",
+  "text": "こんにちは"
+}
+```
+
+が以下のように更新されます：
+```json
+{
+  "speaker": "おぐらくん",
+  "text": "こんにちは"
+}
+```
+
+### 関連ファイル
+
+- `.github/workflows/update-speaker-names.yml` - PRコメントに反応するワークフロー
+- `scripts/update-speakers.cjs` - 話者名を更新するスクリプト
+
 ## 今後の改善案
 
 - 複数エピソードの一括文字起こし
-- 話者名のカスタマイズ
 - 文字起こしの編集機能
 - 検索機能の追加
