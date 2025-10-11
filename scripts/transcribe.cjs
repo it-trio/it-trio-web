@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
-// AssemblyAI API key should be set as environment variable
-const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
+// OpenAI API key should be set as environment variable
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-if (!ASSEMBLYAI_API_KEY) {
-  console.error("Error: ASSEMBLYAI_API_KEY environment variable is not set");
+if (!OPENAI_API_KEY) {
+  console.error("Error: OPENAI_API_KEY environment variable is not set");
   process.exit(1);
 }
 
@@ -41,127 +41,111 @@ function findEpisodeByNumber(number) {
 }
 
 /**
- * Upload audio file to AssemblyAI
+ * Download audio file
  */
-async function uploadAudio(audioUrl) {
+async function downloadAudio(audioUrl) {
   console.log("Downloading audio from:", audioUrl);
 
-  // First, download the audio file
   const audioResponse = await fetch(audioUrl);
   if (!audioResponse.ok) {
     throw new Error(`Failed to download audio: ${audioResponse.statusText}`);
   }
 
   const audioData = await audioResponse.arrayBuffer();
-
-  // Upload to AssemblyAI
-  console.log("Uploading audio to AssemblyAI...");
-  const uploadResponse = await fetch("https://api.assemblyai.com/v2/upload", {
-    method: "POST",
-    headers: {
-      authorization: ASSEMBLYAI_API_KEY,
-    },
-    body: audioData,
-  });
-
-  if (!uploadResponse.ok) {
-    throw new Error(`Failed to upload audio: ${uploadResponse.statusText}`);
-  }
-
-  const { upload_url } = await uploadResponse.json();
-  console.log("Audio uploaded successfully");
-  return upload_url;
+  console.log("Audio downloaded successfully");
+  return Buffer.from(audioData);
 }
 
 /**
- * Submit transcription request to AssemblyAI
+ * Submit transcription request to OpenAI Whisper API
  */
-async function submitTranscription(audioUrl) {
-  console.log("Submitting transcription request...");
+async function transcribeWithWhisper(audioBuffer) {
+  console.log("Submitting transcription request to OpenAI Whisper...");
 
-  const response = await fetch("https://api.assemblyai.com/v2/transcript", {
-    method: "POST",
-    headers: {
-      authorization: ASSEMBLYAI_API_KEY,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      audio_url: audioUrl,
-      speaker_labels: true, // Enable speaker diarization
-      language_code: "ja", // Japanese language
-    }),
+  // Create form data
+  const FormData = require("form-data");
+  const form = new FormData();
+
+  // Add audio file as a blob
+  form.append("file", audioBuffer, {
+    filename: "audio.mp3",
+    contentType: "audio/mpeg",
   });
+  form.append("model", "whisper-1");
+  form.append("language", "ja"); // Japanese language
+  form.append("response_format", "verbose_json"); // Get detailed response with timestamps
+  form.append("timestamp_granularities[]", "segment"); // Get segment-level timestamps
+
+  const response = await fetch(
+    "https://api.openai.com/v1/audio/transcriptions",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        ...form.getHeaders(),
+      },
+      body: form,
+    },
+  );
 
   if (!response.ok) {
-    throw new Error(`Failed to submit transcription: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(
+      `Failed to transcribe audio: ${response.statusText} - ${errorText}`,
+    );
   }
 
   const data = await response.json();
-  return data.id;
+  console.log("Transcription completed!");
+  return data;
 }
 
 /**
- * Wait for transcription to complete
+ * Perform speaker diarization using a simple heuristic approach
+ * This is a basic implementation that can be improved
  */
-async function waitForTranscription(transcriptId) {
-  console.log("Waiting for transcription to complete...");
+function performSpeakerDiarization(segments) {
+  // Simple heuristic: assign speakers based on pause duration
+  // This is a basic approach and may need refinement
+  const diarizedSegments = [];
+  let currentSpeaker = "A";
+  const speakers = ["A", "B", "C"];
+  let speakerIndex = 0;
 
-  const maxAttempts = 15;
-  const pollingInterval = 15000; // 15 seconds
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
+    const prevSegment = i > 0 ? segments[i - 1] : null;
 
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    console.log(
-      `Checking transcription status (attempt ${attempt}/${maxAttempts})...`,
-    );
-
-    const response = await fetch(
-      `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
-      {
-        headers: {
-          authorization: ASSEMBLYAI_API_KEY,
-        },
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to get transcription status: ${response.statusText}`,
-      );
+    // If there's a long pause (>2 seconds), likely a speaker change
+    if (prevSegment && segment.start - prevSegment.end > 2.0) {
+      speakerIndex = (speakerIndex + 1) % speakers.length;
+      currentSpeaker = speakers[speakerIndex];
     }
 
-    const data = await response.json();
-
-    if (data.status === "completed") {
-      console.log("Transcription completed!");
-      return data;
-    } else if (data.status === "error") {
-      throw new Error(`Transcription failed: ${data.error}`);
-    }
-
-    // If not the last attempt, wait before trying again
-    if (attempt < maxAttempts) {
-      console.log(
-        `Status: ${data.status}, waiting ${pollingInterval / 1000} seconds...`,
-      );
-      await new Promise((resolve) => setTimeout(resolve, pollingInterval));
-    }
+    diarizedSegments.push({
+      speaker: currentSpeaker,
+      text: segment.text.trim(),
+      start: Math.floor(segment.start * 1000), // Convert to milliseconds
+      end: Math.floor(segment.end * 1000),
+    });
   }
 
-  // If we've exhausted all attempts without completion
-  throw new Error(
-    `Transcription did not complete after ${maxAttempts} attempts. Please check the transcription status manually using the transcript ID: ${transcriptId}`,
-  );
+  return diarizedSegments;
 }
 
 /**
  * Format transcription data
  */
 function formatTranscription(transcriptionData) {
-  const utterances = transcriptionData.utterances || [];
+  const segments = transcriptionData.segments || [];
 
-  const segments = utterances.map((utterance) => {
+  // Perform basic speaker diarization
+  const diarizedSegments = performSpeakerDiarization(segments);
+
+  // Format segments with timestamps
+  const formattedSegments = diarizedSegments.map((segment) => {
     // Convert milliseconds to timestamp format (HH:MM:SS)
-    const totalSeconds = Math.floor(utterance.start / 1000);
+    const totalSeconds = Math.floor(segment.start / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
@@ -169,16 +153,16 @@ function formatTranscription(transcriptionData) {
     const timestamp = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
     return {
-      speaker: utterance.speaker,
-      text: utterance.text,
+      speaker: segment.speaker,
+      text: segment.text,
       timestamp: timestamp,
-      start: utterance.start,
-      end: utterance.end,
+      start: segment.start,
+      end: segment.end,
     };
   });
 
   return {
-    segments: segments,
+    segments: formattedSegments,
     language: "ja",
   };
 }
@@ -220,21 +204,21 @@ function saveTranscription(episodeGuid, transcriptionData) {
     console.log(`Found episode: ${episode.title}`);
     console.log(`Audio URL: ${episode.url}`);
 
-    // Upload audio
-    const uploadUrl = await uploadAudio(episode.url);
+    // Download audio
+    const audioBuffer = await downloadAudio(episode.url);
 
-    // Submit transcription request
-    const transcriptId = await submitTranscription(uploadUrl);
-    console.log(`Transcription ID: ${transcriptId}`);
-
-    // Wait for transcription to complete
-    const transcriptionData = await waitForTranscription(transcriptId);
+    // Transcribe with OpenAI Whisper
+    const transcriptionData = await transcribeWithWhisper(audioBuffer);
 
     // Format and save transcription
     const formattedData = formatTranscription(transcriptionData);
     saveTranscription(episode.guid, formattedData);
 
     console.log("✓ Transcription completed successfully!");
+    console.log("\nNote: Speaker diarization uses a basic heuristic approach.");
+    console.log(
+      "You may need to manually review and adjust speaker labels if needed.",
+    );
   } catch (error) {
     console.error("Error:", error.message);
     process.exit(1);

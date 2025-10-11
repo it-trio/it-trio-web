@@ -37,7 +37,7 @@ jobs:
 
       - name: Run transcription
         env:
-          ASSEMBLYAI_API_KEY: ${{ secrets.ASSEMBLYAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: pnpm run transcribe ${{ inputs.episode_number }}
 
       - name: Format files
