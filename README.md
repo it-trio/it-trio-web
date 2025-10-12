@@ -1,6 +1,6 @@
-# ITトリオの日常Webサイト
+# ITトリオWebサイト
 
-Astroを使って作成している、[ITトリオの日常の公式Webサイト](https://it-trio-no.com)のレポジトリです。
+Astroを使って作成している、[ITトリオ Webサイト](https://it-trio-no.com)のレポジトリです。
 
 pnpmを使用しています。
 
