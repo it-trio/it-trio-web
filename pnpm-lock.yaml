@@ -36,7 +36,7 @@ importers:
       prettier-plugin-astro:
         specifier: ^0.14.1
         version: 0.14.1
-gi      sharp:
+      sharp:
         specifier: ^0.33.5
         version: 0.33.5
 
@@ -2162,6 +2162,10 @@ packages:
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
+
+gi      sharp:
+  specifier: ^0.33.5
+  version: 0.33.5
 
 snapshots:
 
