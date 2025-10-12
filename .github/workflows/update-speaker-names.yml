@@ -55,7 +55,7 @@ jobs:
         run: |
           # Get all JSON files in the PR
           git fetch origin main
-          FILES=$(git diff --name-only origin/main...HEAD | grep '\.json$' | grep 'src/content/transcription/' || echo "")
+          FILES=$(git diff --name-only origin/main...HEAD | grep '^src/content/transcription/.*\.json$' || echo "")
           if [ -z "$FILES" ]; then
             echo "No transcription JSON files found in this PR"
             echo "files=" >> $GITHUB_OUTPUT
