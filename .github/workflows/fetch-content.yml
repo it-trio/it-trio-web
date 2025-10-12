@@ -32,6 +32,11 @@ jobs:
         working-directory: "."
         run: pnpm install
 
+      - name: Install Japanese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
+
       - name: Make changes to pull request
         run: pnpm run fetch
 

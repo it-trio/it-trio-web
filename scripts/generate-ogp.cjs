@@ -120,7 +120,7 @@ async function generateOGPImage(episode) {
       <defs>
         <style>
           .episode-title {
-            font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'MS Gothic', sans-serif;
+            font-family: 'Noto Sans CJK JP', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'MS Gothic', 'DejaVu Sans', sans-serif;
             font-size: ${fontSize}px;
             font-weight: bold;
             fill: #003368;
@@ -136,8 +136,8 @@ async function generateOGPImage(episode) {
     </svg>
   `;
 
-  // Create SVG buffer
-  const svgBuffer = Buffer.from(svgText);
+  // Create SVG buffer with proper encoding
+  const svgBuffer = Buffer.from(svgText, "utf8");
 
   // Composite the text onto the template
   const outputBuffer = await template

@@ -1,64 +1,69 @@
 name: Generate OGP Image
 
 on:
- workflow_dispatch:
-  inputs:
-   episode_number:
-    description: "Episode number to generate OGP for"
-    required: true
-    type: string
+  workflow_dispatch:
+    inputs:
+      episode_number:
+        description: "Episode number to generate OGP for"
+        required: true
+        type: string
 
 jobs:
- generate-ogp:
-  runs-on: ubuntu-latest
-  steps:
-   - name: Check out repository
-     uses: actions/checkout@v4
-     with:
-      token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
+  generate-ogp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
 
-   # withastro/action@v1と同じ設定にしてキャッシュを共有する
-   - name: Setup PNPM
-     uses: pnpm/action-setup@v2
-     with:
-      version: "latest"
+      # withastro/action@v1と同じ設定にしてキャッシュを共有する
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: "latest"
 
-   - name: Setup Node
-     uses: actions/setup-node@v4
-     with:
-      node-version-file: ".node-version"
-      cache: "pnpm"
-      cache-dependency-path: "./pnpm-lock.yaml"
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".node-version"
+          cache: "pnpm"
+          cache-dependency-path: "./pnpm-lock.yaml"
 
-   - name: Install
-     shell: "bash"
-     working-directory: "."
-     run: pnpm install
+      - name: Install
+        shell: "bash"
+        working-directory: "."
+        run: pnpm install
 
-   - name: Generate OGP image
-     run: pnpm run generate-ogp ${{ inputs.episode_number }}
+      - name: Install Japanese fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
 
-   - name: Format files
-     run: pnpm format
+      - name: Generate OGP image
+        run: pnpm run generate-ogp ${{ inputs.episode_number }}
 
-   - name: Create Pull Request
-     id: cpr
-     uses: peter-evans/create-pull-request@v5
-     with:
-      token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
-      commit-message: Generate OGP image for episode ${{ inputs.episode_number }}
-      committer: GitHub <noreply@github.com>
-      author: GitHub <noreply@github.com>
-      signoff: false
-      branch: generate-ogp-episode-${{ inputs.episode_number }}
-      delete-branch: true
-      title: "Generate OGP image for episode ${{ inputs.episode_number }}"
-      body: |
-       This PR generates OGP image for episode ${{ inputs.episode_number }}.
+      - name: Format files
+        run: pnpm format
 
-       The OGP image includes:
-       - Episode title overlaid on the base template
-       - Optimized for social media sharing (1200x630px)
-       - Episode metadata for Astro integration
-      labels: ogp
-      draft: false
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
+          commit-message: Generate OGP image for episode ${{ inputs.episode_number }}
+          committer: GitHub <noreply@github.com>
+          author: GitHub <noreply@github.com>
+          signoff: false
+          branch: generate-ogp-episode-${{ inputs.episode_number }}
+          delete-branch: true
+          title: "Generate OGP image for episode ${{ inputs.episode_number }}"
+          body: |
+            This PR generates OGP image for episode ${{ inputs.episode_number }}.
+
+            The OGP image includes:
+            - Episode title overlaid on the base template
+            - Optimized for social media sharing (1200x630px)
+            - Episode metadata for Astro integration
+          labels: ogp
+          draft: false
