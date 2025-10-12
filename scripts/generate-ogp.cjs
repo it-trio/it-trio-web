@@ -40,7 +40,7 @@ function checkOGPExists(episodeNumber) {
   const ogpPath = path.join(
     __dirname,
     "../public/episode/ogp",
-    `${episodeNumber}.png`
+    `${episodeNumber}.png`,
   );
   return fs.existsSync(ogpPath);
 }
@@ -52,7 +52,7 @@ function checkEpisodeMetaExists(guid) {
   const metaPath = path.join(
     __dirname,
     "../src/content/episodeMeta",
-    `${guid}.json`
+    `${guid}.json`,
   );
   return fs.existsSync(metaPath);
 }
@@ -62,7 +62,7 @@ function checkEpisodeMetaExists(guid) {
  */
 async function generateOGPImage(episode) {
   console.log(
-    `Generating OGP image for episode ${episode.number}: ${episode.title}`
+    `Generating OGP image for episode ${episode.number}: ${episode.title}`,
   );
 
   // Load the base template
@@ -169,7 +169,7 @@ function createEpisodeMeta(guid, episodeNumber) {
     // Check if OGP already exists
     if (checkOGPExists(episodeNumber)) {
       console.log(
-        `OGP image for episode ${episodeNumber} already exists, skipping...`
+        `OGP image for episode ${episodeNumber} already exists, skipping...`,
       );
       process.exit(0);
     }
@@ -177,7 +177,7 @@ function createEpisodeMeta(guid, episodeNumber) {
     // Check if episode metadata already exists
     if (checkEpisodeMetaExists(episode.guid)) {
       console.log(
-        `Episode metadata for ${episode.guid} already exists, skipping...`
+        `Episode metadata for ${episode.guid} already exists, skipping...`,
       );
       process.exit(0);
     }
