@@ -55,7 +55,9 @@ jobs:
         run: |
           # Get all JSON files in the PR
           git fetch origin main
-          FILES=$(git diff --name-only origin/main...HEAD | grep '\.json$' | grep 'src/content/transcription/' || echo "")
+          # Use merge-base to find the common ancestor and compare from there
+          MERGE_BASE=$(git merge-base origin/main HEAD)
+          FILES=$(git diff --name-only $MERGE_BASE HEAD | grep 'src/content/transcription/.*\.json$' || echo "")
           if [ -z "$FILES" ]; then
             echo "No transcription JSON files found in this PR"
             echo "files=" >> $GITHUB_OUTPUT
