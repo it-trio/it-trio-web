@@ -9,11 +9,11 @@ jobs:
     # Only run if the comment is on a pull request and starts with "speaker"
     if: github.event.issue.pull_request && startsWith(github.event.comment.body, 'speaker ')
     runs-on: ubuntu-latest
-    
+
     permissions:
       contents: write
       pull-requests: write
-    
+
     steps:
       - name: Parse speaker names from comment
         id: parse
@@ -23,7 +23,7 @@ jobs:
           NAMES=$(echo "$COMMENT" | sed 's/^speaker //')
           echo "names=$NAMES" >> $GITHUB_OUTPUT
           echo "Parsed speaker names: $NAMES"
-      
+
       - name: Get PR branch
         id: pr
         uses: actions/github-script@v7
@@ -38,18 +38,18 @@ jobs:
               ref: pr.data.head.ref,
               sha: pr.data.head.sha
             };
-      
+
       - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
           ref: ${{ fromJson(steps.pr.outputs.result).ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       - name: Get changed JSON files
         id: files
         run: |
@@ -65,18 +65,18 @@ jobs:
             FILES_SPACE=$(echo "$FILES" | tr '\n' ' ')
             echo "files=$FILES_SPACE" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Update speaker names
         if: steps.files.outputs.files != ''
         run: |
           node scripts/update-speakers.cjs "${{ steps.parse.outputs.names }}" ${{ steps.files.outputs.files }}
-      
+
       - name: Commit and push changes
         if: steps.files.outputs.files != ''
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
+
           if git diff --quiet; then
             echo "No changes to commit"
           else
@@ -84,7 +84,7 @@ jobs:
             git commit -m "Update speaker names: ${{ steps.parse.outputs.names }}"
             git push
           fi
-      
+
       - name: Add reaction to comment
         if: steps.files.outputs.files != ''
         uses: actions/github-script@v7
@@ -96,7 +96,7 @@ jobs:
               comment_id: context.payload.comment.id,
               content: 'rocket'
             });
-      
+
       - name: Reply to comment
         if: steps.files.outputs.files != ''
         uses: actions/github-script@v7
@@ -104,14 +104,14 @@ jobs:
           script: |
             const names = '${{ steps.parse.outputs.names }}'.split(' ');
             const mapping = names.map((name, i) => `Speaker ${String.fromCharCode(65 + i)} → ${name}`).join('\n');
-            
+
             github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
               body: `✅ Speaker names updated!\n\n${mapping}`
             });
-      
+
       - name: Reply if no files found
         if: steps.files.outputs.files == ''
         uses: actions/github-script@v7
