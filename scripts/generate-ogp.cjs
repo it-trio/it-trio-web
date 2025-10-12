@@ -82,7 +82,7 @@ async function generateOGPImage(episode) {
             font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
             font-size: 48px;
             font-weight: bold;
-            fill: #ffffff;
+            fill: #003368;
             text-anchor: middle;
             dominant-baseline: middle;
           }
