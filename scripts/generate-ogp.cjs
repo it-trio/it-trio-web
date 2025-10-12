@@ -73,24 +73,66 @@ async function generateOGPImage(episode) {
   const { width, height } = await template.metadata();
   console.log(`Template dimensions: ${width}x${height}`);
 
-  // Create SVG text overlay
+  // Function to wrap text
+  function wrapText(text, maxWidth, fontSize) {
+    const words = text.split("");
+    const lines = [];
+    let currentLine = "";
+
+    for (let i = 0; i < words.length; i++) {
+      const testLine = currentLine + words[i];
+      // Rough estimation: each character is about fontSize * 0.6 wide
+      const testWidth = testLine.length * fontSize * 0.6;
+
+      if (testWidth > maxWidth && currentLine !== "") {
+        lines.push(currentLine);
+        currentLine = words[i];
+      } else {
+        currentLine = testLine;
+      }
+    }
+
+    if (currentLine) {
+      lines.push(currentLine);
+    }
+
+    return lines;
+  }
+
+  // Wrap the episode title
+  const maxTextWidth = 550; // Set text area to exactly 550px width
+  const fontSize = 47; // 43 * 1.1 = 47.3, rounded to 47
+  const wrappedLines = wrapText(episode.title, maxTextWidth, fontSize);
+
+  // Create SVG text overlay with wrapped text
+  const textElements = wrappedLines
+    .map((line, index) => {
+      const y =
+        height / 2 +
+        0 +
+        (index - (wrappedLines.length - 1) / 2) * (fontSize + 10);
+      return `<text x="${width / 2}" y="${y}" class="episode-title">${line.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</text>`;
+    })
+    .join("\n");
+
   const svgText = `
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <style>
           .episode-title {
-            font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', sans-serif;
-            font-size: 48px;
+            font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'MS Gothic', sans-serif;
+            font-size: ${fontSize}px;
             font-weight: bold;
             fill: #003368;
             text-anchor: middle;
             dominant-baseline: middle;
+            stroke: #003368;
+            stroke-width: 1;
+            paint-order: stroke fill;
           }
         </style>
       </defs>
-      <text x="${width / 2}" y="${height / 2 + 50}" class="episode-title">
-        ${episode.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}
-      </text>
+      ${textElements}
     </svg>
   `;
 
