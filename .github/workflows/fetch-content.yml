@@ -35,6 +35,27 @@ jobs:
       - name: Make changes to pull request
         run: pnpm run fetch
 
+      - name: Generate OGP images for new episodes
+        run: |
+          # Create episode/ogp directory if it doesn't exist
+          mkdir -p public/episode/ogp
+
+          # Find all episode JSON files and generate OGP for each
+          for file in src/content/episode/*.json; do
+            if [ -f "$file" ]; then
+              # Extract episode number from the JSON file
+              episode_number=$(node -p "JSON.parse(require('fs').readFileSync('$file', 'utf8')).number")
+              
+              # Check if OGP already exists
+              if [ ! -f "public/episode/ogp/${episode_number}.png" ]; then
+                echo "Generating OGP for episode ${episode_number}..."
+                pnpm run generate-ogp ${episode_number}
+              else
+                echo "OGP for episode ${episode_number} already exists, skipping..."
+              fi
+            fi
+          done
+
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v5
