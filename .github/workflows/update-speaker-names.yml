@@ -36,7 +36,8 @@ jobs:
             });
             return {
               ref: pr.data.head.ref,
-              sha: pr.data.head.sha
+              sha: pr.data.head.sha,
+              base_ref: pr.data.base.ref
             };
 
       - name: Checkout PR branch
@@ -54,8 +55,10 @@ jobs:
         id: files
         run: |
           # Get all JSON files in the PR
-          git fetch origin main
-          FILES=$(git diff --name-only origin/main...HEAD | grep '^src/content/transcription/.*\.json$' || echo "")
+          BASE_REF="${{ fromJson(steps.pr.outputs.result).base_ref }}"
+          echo "Comparing against base branch: $BASE_REF"
+          git fetch origin $BASE_REF
+          FILES=$(git diff --name-only origin/$BASE_REF...HEAD | grep '^src/content/transcription/.*\.json$' || echo "")
           if [ -z "$FILES" ]; then
             echo "No transcription JSON files found in this PR"
             echo "files=" >> $GITHUB_OUTPUT
