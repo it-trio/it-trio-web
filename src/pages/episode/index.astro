@@ -2,11 +2,8 @@
 import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/Header.astro";
 import Footer from "../../components/Footer.astro";
-import { getCollection } from "astro:content";
-import EpisodeListItem from "../../components/EpisodeListItem.astro";
+import EpisodeSearch from "../../components/EpisodeSearch.astro";
 import { generatePageTitle } from "../../utils/pageTitle";
-
-const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const pageTitle = generatePageTitle("エピソード一覧");
 const pageDescription = "ポッドキャスト「ITトリオの日常」のエピソード一覧ページです。";
@@ -32,14 +29,6 @@ const pageDescription = "ポッドキャスト「ITトリオの日常」のエ�
           padding-left: 16px;
         }
       }
-      ul {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-      }
     </style>
     <link href="https://web-player.art19.com/assets/current.css" media="screen" rel="stylesheet" type="text/css" />
   </head>
@@ -47,15 +36,7 @@ const pageDescription = "ポッドキャスト「ITトリオの日常」のエ�
     <Header fixed />
     <main>
       <section>
-        <ul>
-          {
-            episodes.map((episode) => (
-              <li>
-                <EpisodeListItem title={episode.data.title} href={`/episode/${episode.data.number}`} imageSrc={episode.data.image} date={episode.data.pubDate} description={episode.data.summary} season={episode.data.season} episodeNumber={episode.data.number} />
-              </li>
-            ))
-          }
-        </ul>
+        <EpisodeSearch />
       </section>
     </main>
     <Footer />

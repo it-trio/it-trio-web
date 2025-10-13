@@ -1,0 +1,356 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import { removeUnnecessaryNewLines } from "../utils/texts";
+
+// Get all episodes and transcriptions
+const episodes = (await getCollection("episode")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Get all transcriptions
+const transcriptions = await getCollection("transcription");
+
+// Create a map of transcriptions by episode ID
+const transcriptionMap = new Map();
+for (const transcription of transcriptions) {
+  transcriptionMap.set(transcription.id, transcription.data);
+}
+
+// Prepare searchable data
+const searchData = episodes.map((episode) => {
+  const transcription = transcriptionMap.get(episode.id);
+  const transcriptionText = transcription 
+    ? transcription.segments.map((seg: { text: string }) => seg.text).join(' ')
+    : '';
+  
+  return {
+    id: episode.id,
+    number: episode.data.number,
+    title: episode.data.title,
+    description: episode.data.description,
+    summary: episode.data.summary,
+    image: episode.data.image,
+    pubDate: episode.data.pubDate.toISOString(),
+    season: episode.data.season,
+    transcriptionText: transcriptionText,
+  };
+});
+---
+
+<div class="search-container">
+  <div class="search-input-wrapper">
+    <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <input
+      type="text"
+      id="episode-search"
+      class="search-input"
+      placeholder="エピソードを検索"
+    />
+    <button id="clear-search" class="clear-button" style="display: none;">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div id="search-results-info" class="search-info"></div>
+  <ul id="episode-list" class="episode-list">
+    {
+      episodes.map((episode) => {
+        const japanTime = new Date(episode.data.pubDate.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
+        return (
+          <li data-episode-id={episode.id}>
+            <a href={`/episode/${episode.data.number}`} class="container">
+              <Image class="image" width="150" height="150" src={episode.data.image} alt={`${episode.data.title}のサムネイル`} />
+              <div class="info">
+                <p class="date">
+                  <time class="time" datetime={japanTime.toISOString()}>
+                    {japanTime.toLocaleDateString("ja-JP", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })}
+                  </time> / S{episode.data.season}・EP{episode.data.number}
+                </p>
+                <p class="title">{episode.data.title}</p>
+                <p class="description">
+                  {removeUnnecessaryNewLines(episode.data.summary)}
+                </p>
+              </div>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</div>
+
+<script>
+  // @ts-ignore - Fuse.js will be imported at runtime
+  import Fuse from 'fuse.js';
+
+  // Define the search data type
+  type SearchData = {
+    id: string;
+    number: number;
+    title: string;
+    description: string;
+    summary: string;
+    image: string;
+    pubDate: string;
+    season: number;
+    transcriptionText: string;
+  };
+
+  // Get search data from the page
+  const searchDataElement = document.getElementById('search-data');
+  const searchData: SearchData[] = searchDataElement ? JSON.parse(searchDataElement.textContent || '[]') : [];
+
+  const searchInput = document.getElementById('episode-search') as HTMLInputElement;
+  const clearButton = document.getElementById('clear-search') as HTMLButtonElement;
+  const episodeList = document.getElementById('episode-list') as HTMLUListElement;
+  const searchResultsInfo = document.getElementById('search-results-info') as HTMLDivElement;
+
+  // Configure Fuse.js for optimized fuzzy search
+  // @ts-ignore
+  const fuse = new Fuse<SearchData>(searchData, {
+    keys: [
+      {
+        name: 'title',
+        weight: 3, // Title is most important
+      },
+      {
+        name: 'description',
+        weight: 2,
+      },
+      {
+        name: 'summary',
+        weight: 2,
+      },
+      {
+        name: 'transcriptionText',
+        weight: 1, // Transcription has lower weight
+      },
+    ],
+    threshold: 0.3, // Lower = more strict matching
+    ignoreLocation: true, // Search in all positions
+    minMatchCharLength: 2, // Minimum characters to match
+    includeScore: true,
+  });
+
+  function searchEpisodes(query: string) {
+    if (!query.trim()) {
+      // Show all episodes
+      const allItems = episodeList.querySelectorAll('li');
+      allItems.forEach(item => {
+        (item as HTMLElement).style.display = '';
+      });
+      searchResultsInfo.textContent = '';
+      clearButton.style.display = 'none';
+      return;
+    }
+
+    clearButton.style.display = 'block';
+
+    // Use Fuse.js for fuzzy search
+    const results = fuse.search(query);
+
+    // Update visibility of episodes
+    const allItems = episodeList.querySelectorAll('li');
+    const resultIds = new Set(results.map((r: any) => r.item.id));
+    
+    allItems.forEach(item => {
+      const episodeId = item.getAttribute('data-episode-id');
+      if (episodeId && resultIds.has(episodeId)) {
+        (item as HTMLElement).style.display = '';
+      } else {
+        (item as HTMLElement).style.display = 'none';
+      }
+    });
+
+    // Update search info
+    if (results.length === 0) {
+      searchResultsInfo.textContent = '検索結果が見つかりませんでした';
+    } else {
+      searchResultsInfo.textContent = `${results.length}件のエピソードが見つかりました`;
+    }
+  }
+
+  // Event listeners
+  searchInput?.addEventListener('input', (e) => {
+    searchEpisodes((e.target as HTMLInputElement).value);
+  });
+
+  clearButton?.addEventListener('click', () => {
+    if (searchInput) {
+      searchInput.value = '';
+      searchEpisodes('');
+    }
+  });
+</script>
+
+<!-- Hidden data for the script -->
+<script id="search-data" type="application/json" set:html={JSON.stringify(searchData)} />
+
+<style>
+  .search-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    margin-bottom: 16px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    pointer-events: none;
+
+    @media (max-width: 720px) {
+      left: 12px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .search-input {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 12px 48px 12px 48px;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--background);
+    color: var(--text-primary);
+    transition: border-color 0.2s;
+
+    @media (max-width: 720px) {
+      padding: 10px 40px 10px 40px;
+      font-size: 0.9rem;
+    }
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .clear-button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+
+    @media (max-width: 720px) {
+      right: 8px;
+      padding: 2px;
+    }
+  }
+
+  .clear-button:hover {
+    background-color: var(--border);
+  }
+
+  .clear-button svg {
+    @media (max-width: 720px) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .search-info {
+    margin-bottom: 16px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+
+    @media (max-width: 720px) {
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
+  }
+
+  .episode-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .episode-list li {
+    width: 100%;
+    transition: opacity 0.2s;
+  }
+
+  .container {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 16px;
+    text-decoration: none;
+    color: var(--text-primary);
+    width: 100%;
+    @media (max-width: 720px) {
+      grid-template-columns: 60px 1fr;
+    }
+  }
+
+  .image {
+    border-radius: 4px;
+    flex-shrink: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  .info {
+    flex-shrink: 1;
+  }
+
+  .date {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 400;
+    line-height: 1;
+    margin: 0;
+  }
+
+  .time {
+    display: inline;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .description {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.4;
+    font-weight: 400;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+</style>
