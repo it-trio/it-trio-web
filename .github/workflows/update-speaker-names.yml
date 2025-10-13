@@ -45,6 +45,7 @@ jobs:
         with:
           ref: ${{ fromJson(steps.pr.outputs.result).ref }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -56,9 +57,15 @@ jobs:
         run: |
           # Get all JSON files in the PR
           BASE_REF="${{ fromJson(steps.pr.outputs.result).base_ref }}"
-          echo "Comparing against base branch: $BASE_REF"
+          HEAD_REF="${{ fromJson(steps.pr.outputs.result).ref }}"
+          echo "Comparing $HEAD_REF against base branch: $BASE_REF"
+
+          # Fetch the base branch
           git fetch origin $BASE_REF
-          FILES=$(git diff --name-only origin/$BASE_REF...HEAD | grep '^src/content/transcription/.*\.json$' || echo "")
+
+          # Get the list of changed files between base and head
+          FILES=$(git diff --name-only origin/$BASE_REF...$HEAD_REF | grep '^src/content/transcription/.*\.json$' || echo "")
+
           if [ -z "$FILES" ]; then
             echo "No transcription JSON files found in this PR"
             echo "files=" >> $GITHUB_OUTPUT
