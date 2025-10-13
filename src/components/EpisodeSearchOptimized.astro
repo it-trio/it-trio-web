@@ -45,7 +45,7 @@ const searchData = episodes.map((episode) => {
       type="text"
       id="episode-search"
       class="search-input"
-      placeholder="エピソードを検索（タイトル、説明文、文字起こしから検索）"
+      placeholder="エピソードを検索"
     />
     <button id="clear-search" class="clear-button" style="display: none;">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -180,11 +180,15 @@ const searchData = episodes.map((episode) => {
 <style>
   .search-container {
     width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   .search-input-wrapper {
     position: relative;
     margin-bottom: 16px;
+    width: 100%;
+    max-width: 100%;
   }
 
   .search-icon {
@@ -194,10 +198,18 @@ const searchData = episodes.map((episode) => {
     transform: translateY(-50%);
     color: var(--text-secondary);
     pointer-events: none;
+
+    @media (max-width: 720px) {
+      left: 12px;
+      width: 16px;
+      height: 16px;
+    }
   }
 
   .search-input {
     width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
     padding: 12px 48px 12px 48px;
     font-size: 1rem;
     border: 2px solid var(--border);
@@ -205,6 +217,11 @@ const searchData = episodes.map((episode) => {
     background-color: var(--background);
     color: var(--text-primary);
     transition: border-color 0.2s;
+
+    @media (max-width: 720px) {
+      padding: 10px 40px 10px 40px;
+      font-size: 0.9rem;
+    }
   }
 
   .search-input:focus {
@@ -227,16 +244,33 @@ const searchData = episodes.map((episode) => {
     justify-content: center;
     border-radius: 4px;
     transition: background-color 0.2s;
+
+    @media (max-width: 720px) {
+      right: 8px;
+      padding: 2px;
+    }
   }
 
   .clear-button:hover {
     background-color: var(--border);
   }
 
+  .clear-button svg {
+    @media (max-width: 720px) {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
   .search-info {
     margin-bottom: 16px;
     color: var(--text-secondary);
     font-size: 0.9rem;
+
+    @media (max-width: 720px) {
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+    }
   }
 
   .episode-list {
