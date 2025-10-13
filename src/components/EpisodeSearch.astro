@@ -18,10 +18,8 @@ for (const transcription of transcriptions) {
 // Prepare searchable data
 const searchData = episodes.map((episode) => {
   const transcription = transcriptionMap.get(episode.id);
-  const transcriptionText = transcription 
-    ? transcription.segments.map((seg: { text: string }) => seg.text).join(' ')
-    : '';
-  
+  const transcriptionText = transcription ? transcription.segments.map((seg: { text: string }) => seg.text).join(" ") : "";
+
   return {
     id: episode.id,
     number: episode.data.number,
@@ -39,17 +37,12 @@ const searchData = episodes.map((episode) => {
 <div class="search-container">
   <div class="search-input-wrapper">
     <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
     </svg>
-    <input
-      type="text"
-      id="episode-search"
-      class="search-input"
-      placeholder="エピソードを検索"
-    />
+    <input type="text" id="episode-search" class="search-input" placeholder="エピソードを検索" enterkeyhint="search" inputmode="search" />
     <button id="clear-search" class="clear-button" style="display: none;">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        <path d="M15 5L5 15M5 5l10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
       </svg>
     </button>
   </div>
@@ -70,12 +63,11 @@ const searchData = episodes.map((episode) => {
                       month: "short",
                       day: "numeric",
                     })}
-                  </time> / S{episode.data.season}・EP{episode.data.number}
+                  </time>{" "}
+                  / S{episode.data.season}・EP{episode.data.number}
                 </p>
                 <p class="title">{episode.data.title}</p>
-                <p class="description">
-                  {removeUnnecessaryNewLines(episode.data.summary)}
-                </p>
+                <p class="description">{removeUnnecessaryNewLines(episode.data.summary)}</p>
               </div>
             </a>
           </li>
@@ -87,7 +79,7 @@ const searchData = episodes.map((episode) => {
 
 <script>
   // @ts-ignore - Fuse.js will be imported at runtime
-  import Fuse from 'fuse.js';
+  import Fuse from "fuse.js";
 
   // Define the search data type
   type SearchData = {
@@ -103,32 +95,32 @@ const searchData = episodes.map((episode) => {
   };
 
   // Get search data from the page
-  const searchDataElement = document.getElementById('search-data');
-  const searchData: SearchData[] = searchDataElement ? JSON.parse(searchDataElement.textContent || '[]') : [];
+  const searchDataElement = document.getElementById("search-data");
+  const searchData: SearchData[] = searchDataElement ? JSON.parse(searchDataElement.textContent || "[]") : [];
 
-  const searchInput = document.getElementById('episode-search') as HTMLInputElement;
-  const clearButton = document.getElementById('clear-search') as HTMLButtonElement;
-  const episodeList = document.getElementById('episode-list') as HTMLUListElement;
-  const searchResultsInfo = document.getElementById('search-results-info') as HTMLDivElement;
+  const searchInput = document.getElementById("episode-search") as HTMLInputElement;
+  const clearButton = document.getElementById("clear-search") as HTMLButtonElement;
+  const episodeList = document.getElementById("episode-list") as HTMLUListElement;
+  const searchResultsInfo = document.getElementById("search-results-info") as HTMLDivElement;
 
   // Configure Fuse.js for optimized fuzzy search
   // @ts-ignore
   const fuse = new Fuse<SearchData>(searchData, {
     keys: [
       {
-        name: 'title',
+        name: "title",
         weight: 3, // Title is most important
       },
       {
-        name: 'description',
+        name: "description",
         weight: 2,
       },
       {
-        name: 'summary',
+        name: "summary",
         weight: 2,
       },
       {
-        name: 'transcriptionText',
+        name: "transcriptionText",
         weight: 1, // Transcription has lower weight
       },
     ],
@@ -141,50 +133,58 @@ const searchData = episodes.map((episode) => {
   function searchEpisodes(query: string) {
     if (!query.trim()) {
       // Show all episodes
-      const allItems = episodeList.querySelectorAll('li');
-      allItems.forEach(item => {
-        (item as HTMLElement).style.display = '';
+      const allItems = episodeList.querySelectorAll("li");
+      allItems.forEach((item) => {
+        (item as HTMLElement).style.display = "";
       });
-      searchResultsInfo.textContent = '';
-      clearButton.style.display = 'none';
+      searchResultsInfo.textContent = "";
+      clearButton.style.display = "none";
       return;
     }
 
-    clearButton.style.display = 'block';
+    clearButton.style.display = "block";
 
     // Use Fuse.js for fuzzy search
     const results = fuse.search(query);
 
     // Update visibility of episodes
-    const allItems = episodeList.querySelectorAll('li');
+    const allItems = episodeList.querySelectorAll("li");
     const resultIds = new Set(results.map((r: any) => r.item.id));
-    
-    allItems.forEach(item => {
-      const episodeId = item.getAttribute('data-episode-id');
+
+    allItems.forEach((item) => {
+      const episodeId = item.getAttribute("data-episode-id");
       if (episodeId && resultIds.has(episodeId)) {
-        (item as HTMLElement).style.display = '';
+        (item as HTMLElement).style.display = "";
       } else {
-        (item as HTMLElement).style.display = 'none';
+        (item as HTMLElement).style.display = "none";
       }
     });
 
     // Update search info
     if (results.length === 0) {
-      searchResultsInfo.textContent = '検索結果が見つかりませんでした';
+      searchResultsInfo.textContent = "検索結果が見つかりませんでした";
     } else {
       searchResultsInfo.textContent = `${results.length}件のエピソードが見つかりました`;
     }
   }
 
   // Event listeners
-  searchInput?.addEventListener('input', (e) => {
+  searchInput?.addEventListener("input", (e) => {
     searchEpisodes((e.target as HTMLInputElement).value);
   });
 
-  clearButton?.addEventListener('click', () => {
+  // Blur input when Enter is pressed (user finished typing)
+  searchInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      searchInput.blur();
+    }
+  });
+
+  clearButton?.addEventListener("click", () => {
     if (searchInput) {
-      searchInput.value = '';
-      searchEpisodes('');
+      searchInput.value = "";
+      searchEpisodes("");
+      searchInput.blur(); // Remove focus after clearing
     }
   });
 </script>
