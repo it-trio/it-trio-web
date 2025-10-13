@@ -88,9 +88,22 @@ const searchData = episodes.map((episode) => {
 <script>
   import Fuse from 'fuse.js';
 
+  // Define the search data type
+  type SearchData = {
+    id: string;
+    number: number;
+    title: string;
+    description: string;
+    summary: string;
+    image: string;
+    pubDate: string;
+    season: number;
+    transcriptionText: string;
+  };
+
   // Get search data from the page
   const searchDataElement = document.getElementById('search-data');
-  const searchData = searchDataElement ? JSON.parse(searchDataElement.textContent || '[]') : [];
+  const searchData: SearchData[] = searchDataElement ? JSON.parse(searchDataElement.textContent || '[]') : [];
 
   const searchInput = document.getElementById('episode-search') as HTMLInputElement;
   const clearButton = document.getElementById('clear-search') as HTMLButtonElement;
@@ -98,7 +111,7 @@ const searchData = episodes.map((episode) => {
   const searchResultsInfo = document.getElementById('search-results-info') as HTMLDivElement;
 
   // Configure Fuse.js for optimized fuzzy search
-  const fuse = new Fuse(searchData, {
+  const fuse = new Fuse<SearchData>(searchData, {
     keys: [
       {
         name: 'title',
@@ -142,7 +155,7 @@ const searchData = episodes.map((episode) => {
 
     // Update visibility of episodes
     const allItems = episodeList.querySelectorAll('li');
-    const resultIds = new Set(results.map(r => (r.item as any).id));
+    const resultIds = new Set(results.map(r => r.item.id));
     
     allItems.forEach(item => {
       const episodeId = item.getAttribute('data-episode-id');
