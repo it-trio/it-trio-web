@@ -202,16 +202,14 @@ Return ONLY the cleaned text without any explanations or additional commentary.`
 }
 
 /**
- * Format transcription data
+ * Process a batch of utterances in parallel
  */
-async function formatTranscription(transcriptionData) {
-  const utterances = transcriptionData.utterances || [];
+async function processBatch(utterances, batchIndex, totalBatches) {
+  console.log(
+    `Processing batch ${batchIndex + 1}/${totalBatches} (${utterances.length} segments)...`
+  );
 
-  const segments = [];
-
-  for (let i = 0; i < utterances.length; i++) {
-    const utterance = utterances[i];
-
+  const promises = utterances.map(async (utterance, index) => {
     // Convert milliseconds to timestamp format (HH:MM:SS)
     const totalSeconds = Math.floor(utterance.start / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -221,16 +219,41 @@ async function formatTranscription(transcriptionData) {
     const timestamp = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
     // Clean up the text using OpenAI
-    console.log(`Cleaning up segment ${i + 1}/${utterances.length}...`);
     const cleanedText = await cleanupJapaneseText(utterance.text);
 
-    segments.push({
+    return {
       speaker: utterance.speaker,
       text: cleanedText,
       timestamp: timestamp,
       start: utterance.start,
       end: utterance.end,
-    });
+    };
+  });
+
+  return Promise.all(promises);
+}
+
+/**
+ * Format transcription data with parallel processing
+ */
+async function formatTranscription(transcriptionData) {
+  const utterances = transcriptionData.utterances || [];
+  const segments = [];
+
+  // Process in batches of 4 concurrent requests
+  const batchSize = 5;
+  const totalBatches = Math.ceil(utterances.length / batchSize);
+
+  console.log(
+    `Processing ${utterances.length} segments in ${totalBatches} batches of ${batchSize} concurrent requests...`
+  );
+
+  for (let i = 0; i < utterances.length; i += batchSize) {
+    const batch = utterances.slice(i, i + batchSize);
+    const batchIndex = Math.floor(i / batchSize);
+
+    const batchResults = await processBatch(batch, batchIndex, totalBatches);
+    segments.push(...batchResults);
   }
 
   return {
