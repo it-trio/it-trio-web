@@ -6,6 +6,18 @@
 
 この機能は、エピソードの音声を自動的に文字起こしし、話者識別とタイムスタンプ付きでエピソードページに表示します。
 
+## テキストクリーンアップ機能
+
+文字起こし後、OpenAI GPT-4o-miniを使用して以下の改善を自動的に行います：
+
+- 日本語文字間の過剰なスペースの削除
+- 予測可能な誤字・誤認識の修正
+- 文脈に基づく誤認識語の修正
+- 句読点の正規化
+- 自然な文章の流れの保持
+
+この機能により、より読みやすく正確な文字起こしが生成されます。
+
 ## 使用しているサービス
 
 文字起こしには [AssemblyAI](https://www.assemblyai.com/) を使用しています。AssemblyAIは以下の理由で選ばれました：
@@ -23,11 +35,19 @@
 2. アカウントを作成
 3. ダッシュボードからAPIキーを取得
 
-### 2. GitHub Secretsの設定
+### 2. OpenAI APIキーの取得
+
+1. [OpenAI](https://platform.openai.com/) にアクセス
+2. アカウントを作成（またはログイン）
+3. API Keys セクションから新しいAPIキーを作成
+4. 文字起こしの品質向上のため、GPT-4o-miniを使用してテキストをクリーンアップします
+
+### 3. GitHub Secretsの設定
 
 1. GitHubリポジトリの Settings > Secrets and variables > Actions に移動
-2. `ASSEMBLYAI_API_KEY` という名前でシークレットを追加
-3. 取得したAPIキーを値として設定
+2. 以下のシークレットを追加：
+   - `ASSEMBLYAI_API_KEY`: AssemblyAIのAPIキー
+   - `OPENAI_API_KEY`: OpenAIのAPIキー
 
 ## 使い方
 
@@ -45,7 +65,8 @@
 
 ```bash
 # 環境変数を設定
-export ASSEMBLYAI_API_KEY=your_api_key_here
+export ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here
+export OPENAI_API_KEY=your_openai_api_key_here
 
 # スクリプトを実行
 pnpm run transcribe 18
@@ -54,7 +75,7 @@ pnpm run transcribe 18
 または直接：
 
 ```bash
-ASSEMBLYAI_API_KEY=your_api_key_here node scripts/transcribe.cjs 18
+ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here OPENAI_API_KEY=your_openai_api_key_here node scripts/transcribe.cjs 18
 ```
 
 ## ファイル構造

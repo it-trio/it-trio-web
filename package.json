@@ -25,6 +25,7 @@
     "typescript": "^5.6.3"
   },
   "devDependencies": {
+    "openai": "^6.3.0",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
     "sharp": "^0.33.5"
