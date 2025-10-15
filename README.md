@@ -11,3 +11,28 @@ pnpmを使用しています。
 pnpm install
 pnpm start
 ```
+
+## エピソードリンクの管理
+
+各エピソードページには、Spotify、Apple Podcast、Amazon Music、YouTubeなどのプラットフォームへのリンクがあります。
+
+### 自動取得（推奨）
+
+APIを使用してエピソードリンクを自動的に取得できます：
+
+```bash
+# .envファイルを設定（.env.exampleを参照）
+cp .env.example .env
+# APIキーを.envに追加
+
+# すべてのエピソードのリンクを取得
+pnpm fetch-episode-links --all
+
+# 特定のエピソードのリンクを取得
+pnpm fetch-episode-links 1 2 3
+
+# 取得したリンクを適用
+pnpm update-episode-links episode-links-fetched.json
+```
+
+詳細は [EPISODE_LINKS.md](./EPISODE_LINKS.md) を参照してください。

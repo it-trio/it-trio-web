@@ -8,6 +8,67 @@ Currently, each episode page links to the channel page for each platform. With t
 
 If an episode doesn't have a specific platform link, the page will automatically fall back to displaying the channel link.
 
+## 🤖 Automated Fetching (Recommended)
+
+The easiest way to get episode links is to use the automated fetcher script that pulls links from Spotify, Apple Podcasts, and YouTube APIs.
+
+### Setup
+
+1. **Create a `.env` file** in the project root (copy from `.env.example`):
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Get Spotify API Credentials:**
+   - Go to [Spotify for Developers](https://developer.spotify.com/dashboard)
+   - Create a new app (or use an existing one)
+   - Copy the Client ID and Client Secret to your `.env` file
+
+3. **Get YouTube API Key:**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+   - Create a new project (or use an existing one)
+   - Enable YouTube Data API v3
+   - Create an API key and copy it to your `.env` file
+
+4. **Apple Podcasts** works automatically (uses public iTunes API, no key needed)
+
+### Usage
+
+Fetch links for all episodes:
+```bash
+pnpm fetch-episode-links --all
+```
+
+Or fetch links for specific episodes:
+```bash
+pnpm fetch-episode-links 1 2 3 18 25
+```
+
+The script will:
+1. Fetch episode data from Spotify, Apple Podcasts, and YouTube
+2. Match episodes by title and episode number
+3. Save the results to `episode-links-fetched.json`
+4. Display a summary of matches
+
+Then apply the fetched links:
+```bash
+pnpm update-episode-links episode-links-fetched.json
+```
+
+### Troubleshooting
+
+- **No Spotify matches**: Check your `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET`
+- **No YouTube matches**: Check your `YOUTUBE_API_KEY` and ensure YouTube Data API v3 is enabled
+- **Apple Podcasts works without credentials**: Uses the public iTunes Search API
+
+### Amazon Music
+
+Amazon Music doesn't provide a public API, so links for Amazon Music need to be added manually. The automated script will fetch links for Spotify, Apple Podcasts, and YouTube only.
+
+## 📝 Manual Method
+
+If you prefer to add links manually or need to add Amazon Music links, follow these steps:
+
 ## How to Add Episode Links
 
 ### Step 1: Prepare the Episode Links File
