@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "fetch": "node scripts/rss-fetch.cjs && pnpm format",
     "transcribe": "node scripts/transcribe.cjs",
-    "generate-ogp": "node scripts/generate-ogp.cjs"
+    "generate-ogp": "node scripts/generate-ogp.cjs",
+    "update-episode-links": "node scripts/update-episode-links.cjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",

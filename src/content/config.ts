@@ -28,6 +28,12 @@ const episode = defineCollection({
     summary: z.string(),
     url: z.string(),
     episodeType: z.string(),
+    // Episode-specific platform links (optional, fallback to channel links)
+    spotifyEpisodeLink: z.string().optional(),
+    applePodcastEpisodeLink: z.string().optional(),
+    amazonMusicEpisodeLink: z.string().optional(),
+    youtubeMusicEpisodeLink: z.string().optional(),
+    youtubeEpisodeLink: z.string().optional(),
   }),
 });
 

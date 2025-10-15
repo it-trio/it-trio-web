@@ -1,0 +1,9 @@
+{
+  "0a775d4e-d12f-426f-8005-6c79b3c1c71b": {
+    "spotifyEpisodeLink": "https://open.spotify.com/episode/EPISODE_ID_HERE",
+    "applePodcastEpisodeLink": "https://podcasts.apple.com/jp/podcast/EPISODE_NAME/id1644482809?i=EPISODE_ID",
+    "amazonMusicEpisodeLink": "https://music.amazon.co.jp/podcasts/fdfe7e3f-4ddb-4717-9501-414e5dabcf3b/episodes/EPISODE_ID",
+    "youtubeMusicEpisodeLink": "https://music.youtube.com/watch?v=VIDEO_ID",
+    "youtubeEpisodeLink": "https://www.youtube.com/watch?v=VIDEO_ID"
+  }
+}
