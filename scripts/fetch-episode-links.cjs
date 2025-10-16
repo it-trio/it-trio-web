@@ -4,6 +4,14 @@ const fs = require("fs");
 const path = require("path");
 const https = require("https");
 const zlib = require("zlib");
+let puppeteer = null;
+
+// Try to load puppeteer (optional dependency)
+try {
+  puppeteer = require("puppeteer");
+} catch (e) {
+  // Puppeteer not installed
+}
 
 /**
  * Script to automatically fetch episode links from various platforms
@@ -20,7 +28,7 @@ const zlib = require("zlib");
  *
  * 2. Get Spotify credentials from: https://developer.spotify.com/dashboard
  * 3. Get YouTube API key from: https://console.cloud.google.com/apis/credentials
- * 4. Amazon Music uses web scraping (may be unreliable, authentication often required)
+ * 4. Amazon Music uses Puppeteer (browser automation) - requires: pnpm add -D puppeteer
  *
  * Usage:
  *    node scripts/fetch-episode-links.cjs [--all] [episode-number]
@@ -206,79 +214,176 @@ async function fetchApplePodcastEpisodes() {
   }
 }
 
-// Amazon Music API functions (web scraping approach)
+// Amazon Music API functions (browser automation with Puppeteer)
 async function fetchAmazonMusicEpisodes() {
-  console.log("📦 Fetching Amazon Music episodes (web scraping)...");
+  console.log("📦 Fetching Amazon Music episodes (browser automation)...");
+
+  if (!puppeteer) {
+    console.log("⚠️  Puppeteer not installed. Skipping Amazon Music.");
+    console.log("   Install with: pnpm add -D puppeteer");
+    return [];
+  }
+
+  let browser = null;
 
   try {
     const url = `https://music.amazon.co.jp/podcasts/${AMAZON_MUSIC_SHOW_ID}`;
-    console.log(`  Initial URL: ${url}`);
-    console.log(
-      `  Note: Amazon Music requires browser-like behavior and authentication.`,
-    );
-    console.log(
-      `  The redirect following works, but content is loaded dynamically.`,
-    );
+    console.log(`  Launching headless browser...`);
 
-    const response = await httpsRequest(url, {
-      headers: {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "ja,en-US;q=0.9,en;q=0.8",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Cache-Control": "no-cache",
-        Pragma: "no-cache",
-      },
+    browser = await puppeteer.launch({
+      headless: "new",
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+      ],
     });
 
-    if (response.statusCode !== 200) {
-      console.log(
-        "⚠️  Could not fetch Amazon Music page (status: " +
-          response.statusCode +
-          ").",
-      );
-      console.log(
-        "   This is expected as Amazon Music often requires authentication.",
-      );
-      console.log("   Amazon Music episode links need to be added manually.");
-      return [];
+    const page = await browser.newPage();
+
+    // Set viewport and user agent
+    await page.setViewport({ width: 1280, height: 800 });
+    await page.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    );
+
+    console.log(`  Navigating to: ${url}`);
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+
+    console.log(`  Waiting for content to load...`);
+
+    // Wait for episode list to be rendered
+    // Amazon Music typically loads episodes in a container
+    await page
+      .waitForSelector('a[href*="/episodes/"]', {
+        timeout: 15000,
+      })
+      .catch(() => {
+        console.log("  Could not find episode links on page");
+      });
+
+    // Additional wait to ensure dynamic content is fully loaded
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    // Extract episode links
+    const episodes = await page.evaluate((showId) => {
+      const episodeLinks = [];
+      const links = document.querySelectorAll('a[href*="/episodes/"]');
+
+      links.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (href && href.includes(`/podcasts/${showId}/episodes/`)) {
+          // Extract episode ID from href
+          const match = href.match(/\/episodes\/([a-zA-Z0-9-]+)/);
+          if (match) {
+            const episodeId = match[1];
+
+            // Try to find title in parent container or aria-label
+            let titleText = "";
+
+            // Check aria-label first (often contains the title)
+            if (link.getAttribute("aria-label")) {
+              titleText = link.getAttribute("aria-label");
+            }
+
+            // If no aria-label, look for common text patterns
+            if (!titleText) {
+              // Find the parent container and look for text nodes
+              let current = link;
+              for (let i = 0; i < 3; i++) {
+                if (current.parentElement) {
+                  current = current.parentElement;
+
+                  // Look for elements with substantial text
+                  const textElements = current.querySelectorAll(
+                    "div, span, p, h1, h2, h3, h4",
+                  );
+                  for (const el of textElements) {
+                    const text = el.textContent?.trim();
+                    // Look for text that looks like a title (has length, not just numbers/dates)
+                    if (
+                      text &&
+                      text.length > 5 &&
+                      text.length < 200 &&
+                      /[^\d\s]/.test(text)
+                    ) {
+                      titleText = text;
+                      break;
+                    }
+                  }
+
+                  if (titleText) break;
+                }
+              }
+            }
+
+            // Fallback: get text from the link itself
+            if (!titleText && link.textContent) {
+              titleText = link.textContent.trim();
+            }
+
+            // Clean up the title
+            if (titleText) {
+              titleText = titleText.replace(/\s+/g, " ").trim();
+            }
+
+            episodeLinks.push({
+              id: episodeId,
+              name: titleText || `Episode ${episodeId}`,
+              url: href.startsWith("http")
+                ? href
+                : `https://music.amazon.co.jp${href}`,
+            });
+          }
+        }
+      });
+
+      // Remove duplicates based on episode ID
+      const unique = [];
+      const seen = new Set();
+      for (const episode of episodeLinks) {
+        if (!seen.has(episode.id)) {
+          seen.add(episode.id);
+          unique.push(episode);
+        }
+      }
+
+      return unique;
+    }, AMAZON_MUSIC_SHOW_ID);
+
+    // Debug: log first few episodes to help with troubleshooting
+    if (episodes.length > 0 && process.env.DEBUG) {
+      console.log("  First 3 episodes found:");
+      episodes.slice(0, 3).forEach((ep) => {
+        console.log(
+          `    - ${ep.name.substring(0, 60)}... (${ep.id.substring(0, 8)}...)`,
+        );
+      });
     }
-
-    const html = response.data;
-
-    // Amazon Music uses a single-page application that loads content dynamically
-    // The initial HTML doesn't contain episode data - it's loaded via JavaScript/API calls
-    console.log(
-      "⚠️  Amazon Music uses dynamic content loading (SPA). Episode data is not in initial HTML.",
-    );
-    console.log(
-      "   Fetching episode data would require browser automation or additional API calls.",
-    );
-    console.log("   Amazon Music episode links should be added manually.");
-
-    // Note: To properly extract Amazon Music episodes, we would need to:
-    // 1. Simulate a browser environment
-    // 2. Execute JavaScript
-    // 3. Wait for dynamic content to load
-    // 4. Extract episode data from the rendered DOM
-    // This is beyond the scope of a simple Node.js script.
-
-    return [];
 
     if (episodes.length > 0) {
       console.log(`✓ Found ${episodes.length} episodes on Amazon Music`);
     } else {
       console.log("⚠️  Could not extract episodes from Amazon Music.");
-      console.log("   Amazon Music episode links need to be added manually.");
+      console.log(
+        "   The page might require authentication or have a different structure.",
+      );
     }
 
     return episodes;
   } catch (error) {
     console.log("⚠️  Error fetching Amazon Music episodes:", error.message);
-    console.log("   Amazon Music episode links need to be added manually.");
+    if (error.message.includes("timeout")) {
+      console.log(
+        "   Page loading timed out. Amazon Music might require authentication.",
+      );
+    }
     return [];
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 }
 
@@ -542,7 +647,7 @@ Environment Variables (optional):
 Platform Support:
   ✓ Spotify          - Requires API credentials
   ✓ Apple Podcasts   - Works without credentials (public API)
-  ~ Amazon Music     - Experimental web scraping (often fails, manual entry recommended)
+  ✓ Amazon Music     - Uses Puppeteer browser automation (install: pnpm add -D puppeteer)
   ✓ YouTube          - Requires API key
 
 See EPISODE_LINKS.md for setup instructions.
