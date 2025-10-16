@@ -7,8 +7,9 @@ const https = require("https");
 /**
  * Script to automatically fetch episode links from various platforms
  *
- * This script fetches episode-specific links from Spotify, Apple Podcasts, and YouTube
- * using their respective APIs. It matches episodes by title and episode number.
+ * This script fetches episode-specific links from Spotify, Apple Podcasts, Amazon Music,
+ * and YouTube using their respective APIs/web scraping. It matches episodes by title and
+ * episode number.
  *
  * Setup:
  * 1. Create a .env file in the project root with:
@@ -18,6 +19,7 @@ const https = require("https");
  *
  * 2. Get Spotify credentials from: https://developer.spotify.com/dashboard
  * 3. Get YouTube API key from: https://console.cloud.google.com/apis/credentials
+ * 4. Amazon Music uses web scraping (may be unreliable, authentication often required)
  *
  * Usage:
  *    node scripts/fetch-episode-links.cjs [--all] [episode-number]
@@ -30,6 +32,7 @@ const https = require("https");
 // Configuration from consts.ts
 const SPOTIFY_SHOW_ID = "4swQbE6pLzOz3p1Z9Etkqc";
 const APPLE_PODCAST_ID = "1644482809";
+const AMAZON_MUSIC_SHOW_ID = "fdfe7e3f-4ddb-4717-9501-414e5dabcf3b";
 const YOUTUBE_CHANNEL_ID = "UCxXxWl8ZX8K4V7x0i4h0iXg"; // @it-trio
 const YOUTUBE_PLAYLIST_ID = "PLqtv1UJuRQssCX_himpcWZLalPSeHIcR3"; // YouTube Music playlist
 
@@ -161,6 +164,74 @@ async function fetchApplePodcastEpisodes() {
   }
 }
 
+// Amazon Music API functions (web scraping approach)
+async function fetchAmazonMusicEpisodes() {
+  console.log("📦 Fetching Amazon Music episodes (web scraping)...");
+
+  try {
+    const url = `https://music.amazon.co.jp/podcasts/${AMAZON_MUSIC_SHOW_ID}`;
+    const response = await httpsRequest(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        Accept:
+          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+      },
+    });
+
+    if (response.statusCode !== 200) {
+      console.log(
+        "⚠️  Could not fetch Amazon Music page. This is expected as Amazon Music requires authentication.",
+      );
+      console.log("   Amazon Music episode links need to be added manually.");
+      return [];
+    }
+
+    const html = response.data;
+    const episodes = [];
+
+    // Try to extract episode data from the HTML
+    // Amazon Music uses JSON-LD structured data
+    const jsonLdMatch = html.match(
+      /<script type="application\/ld\+json">(.*?)<\/script>/gs,
+    );
+
+    if (jsonLdMatch) {
+      for (const match of jsonLdMatch) {
+        try {
+          const jsonStr = match
+            .replace(/<script[^>]*>/, "")
+            .replace(/<\/script>/, "");
+          const data = JSON.parse(jsonStr);
+
+          if (data["@type"] === "PodcastSeries" && data.episode) {
+            const episodeList = Array.isArray(data.episode)
+              ? data.episode
+              : [data.episode];
+            episodes.push(...episodeList);
+          }
+        } catch (e) {
+          // Continue if JSON parsing fails
+        }
+      }
+    }
+
+    if (episodes.length > 0) {
+      console.log(`✓ Found ${episodes.length} episodes on Amazon Music`);
+    } else {
+      console.log("⚠️  Could not extract episodes from Amazon Music.");
+      console.log("   Amazon Music episode links need to be added manually.");
+    }
+
+    return episodes;
+  } catch (error) {
+    console.log("⚠️  Error fetching Amazon Music episodes:", error.message);
+    console.log("   Amazon Music episode links need to be added manually.");
+    return [];
+  }
+}
+
 // YouTube API functions
 async function fetchYouTubeVideos() {
   const apiKey = process.env.YOUTUBE_API_KEY;
@@ -243,6 +314,26 @@ function matchApplePodcastEpisode(episode, applePodcastEpisodes) {
   return null;
 }
 
+function matchAmazonMusicEpisode(episode, amazonMusicEpisodes) {
+  const episodeTitle = normalizeTitle(episode.title);
+
+  const match = amazonMusicEpisodes.find((am) => {
+    const amTitle = normalizeTitle(am.name || "");
+    return amTitle === episodeTitle || am.name?.includes(`${episode.number}:`);
+  });
+
+  if (match) {
+    // Extract episode ID from URL
+    if (match.url) {
+      return match.url;
+    } else if (match["@id"]) {
+      return match["@id"];
+    }
+  }
+
+  return null;
+}
+
 function matchYouTubeVideo(episode, youtubeVideos) {
   const episodeTitle = normalizeTitle(episode.title);
 
@@ -290,6 +381,7 @@ async function fetchLinksForEpisodes(episodeNumbers = null) {
   const spotifyToken = await getSpotifyAccessToken();
   const spotifyEpisodes = await fetchSpotifyEpisodes(spotifyToken);
   const applePodcastEpisodes = await fetchApplePodcastEpisodes();
+  const amazonMusicEpisodes = await fetchAmazonMusicEpisodes();
   const youtubeVideos = await fetchYouTubeVideos();
 
   console.log("\n🔍 Matching episodes with platform links...\n");
@@ -319,6 +411,15 @@ async function fetchLinksForEpisodes(episodeNumbers = null) {
       }
     }
 
+    // Match Amazon Music
+    if (amazonMusicEpisodes.length > 0) {
+      const amazonLink = matchAmazonMusicEpisode(episode, amazonMusicEpisodes);
+      if (amazonLink) {
+        links.amazonMusicEpisodeLink = amazonLink;
+        hasMatch = true;
+      }
+    }
+
     // Match YouTube
     if (youtubeVideos.length > 0) {
       const youtubeLinks = matchYouTubeVideo(episode, youtubeVideos);
@@ -336,6 +437,7 @@ async function fetchLinksForEpisodes(episodeNumbers = null) {
       const platforms = [];
       if (links.spotifyEpisodeLink) platforms.push("Spotify");
       if (links.applePodcastEpisodeLink) platforms.push("Apple");
+      if (links.amazonMusicEpisodeLink) platforms.push("Amazon");
       if (links.youtubeEpisodeLink) platforms.push("YouTube");
 
       console.log(`✓ Episode ${episode.number}: ${platforms.join(", ")}`);
@@ -371,7 +473,7 @@ function parseArgs() {
     console.log(`
 Usage: node scripts/fetch-episode-links.cjs [OPTIONS] [EPISODE_NUMBERS]
 
-Automatically fetch episode links from Spotify, Apple Podcasts, and YouTube.
+Automatically fetch episode links from Spotify, Apple Podcasts, Amazon Music, and YouTube.
 
 Options:
   --all               Fetch links for all episodes
@@ -382,10 +484,16 @@ Examples:
   node scripts/fetch-episode-links.cjs 1 2 3 4 5
   node scripts/fetch-episode-links.cjs 18
 
-Environment Variables (required):
+Environment Variables (optional):
   SPOTIFY_CLIENT_ID       Your Spotify app client ID
   SPOTIFY_CLIENT_SECRET   Your Spotify app client secret
   YOUTUBE_API_KEY         Your YouTube Data API v3 key
+
+Platform Support:
+  ✓ Spotify          - Requires API credentials
+  ✓ Apple Podcasts   - Works without credentials (public API)
+  ~ Amazon Music     - Experimental web scraping (often fails, manual entry recommended)
+  ✓ YouTube          - Requires API key
 
 See EPISODE_LINKS.md for setup instructions.
     `);

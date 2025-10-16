@@ -63,7 +63,7 @@ pnpm update-episode-links episode-links-fetched.json
 
 ### Amazon Music
 
-Amazon Music doesn't provide a public API, so links for Amazon Music need to be added manually. The automated script will fetch links for Spotify, Apple Podcasts, and YouTube only.
+Amazon Music doesn't provide a public API. The automated script will attempt to fetch episode links via web scraping, but this method is unreliable and often fails due to authentication requirements. If Amazon Music links are not fetched automatically, you'll need to add them manually.
 
 ## 📝 Manual Method
 
@@ -118,9 +118,14 @@ ls src/content/episode/
 3. Format: `https://podcasts.apple.com/jp/podcast/episode-name/id{show_id}?i={episode_id}`
 
 #### Amazon Music
+Amazon Music links are attempted automatically but often fail due to authentication requirements.
+
+To add manually:
 1. Open the episode in Amazon Music
 2. Use the share function to get the episode link
 3. Format: `https://music.amazon.co.jp/podcasts/{show_id}/episodes/{episode_id}`
+
+Note: The episode ID can sometimes be found in the page source or by inspecting network requests.
 
 #### YouTube
 1. Open the episode video on YouTube

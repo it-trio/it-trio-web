@@ -206,7 +206,7 @@ Return ONLY the cleaned text without any explanations or additional commentary.`
  */
 async function processBatch(utterances, batchIndex, totalBatches) {
   console.log(
-    `Processing batch ${batchIndex + 1}/${totalBatches} (${utterances.length} segments)...`
+    `Processing batch ${batchIndex + 1}/${totalBatches} (${utterances.length} segments)...`,
   );
 
   const promises = utterances.map(async (utterance, index) => {
@@ -245,7 +245,7 @@ async function formatTranscription(transcriptionData) {
   const totalBatches = Math.ceil(utterances.length / batchSize);
 
   console.log(
-    `Processing ${utterances.length} segments in ${totalBatches} batches of ${batchSize} concurrent requests...`
+    `Processing ${utterances.length} segments in ${totalBatches} batches of ${batchSize} concurrent requests...`,
   );
 
   for (let i = 0; i < utterances.length; i += batchSize) {
