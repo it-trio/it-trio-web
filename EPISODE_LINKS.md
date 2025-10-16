@@ -63,7 +63,13 @@ pnpm update-episode-links episode-links-fetched.json
 
 ### Amazon Music
 
-Amazon Music doesn't provide a public API. The automated script will attempt to fetch episode links via web scraping, but this method is unreliable and often fails due to authentication requirements. If Amazon Music links are not fetched automatically, you'll need to add them manually.
+Amazon Music doesn't provide a public API. The automated script attempts to access the podcast page, but Amazon Music uses a Single Page Application (SPA) architecture where episode data is loaded dynamically via JavaScript after the initial page load. This means:
+
+- ✅ The script **can** follow redirects to find the correct podcast URL
+- ❌ The script **cannot** extract episode data from the dynamically loaded content
+- 📝 Amazon Music links must be added **manually**
+
+To add Amazon Music links manually, see the Manual Method section below.
 
 ## 📝 Manual Method
 

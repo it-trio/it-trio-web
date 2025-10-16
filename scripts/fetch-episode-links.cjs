@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
+const zlib = require("zlib");
 
 /**
  * Script to automatically fetch episode links from various platforms
@@ -55,19 +56,60 @@ function loadEnv() {
 
 loadEnv();
 
-// Helper function to make HTTPS requests
-function httpsRequest(url, options = {}) {
+// Helper function to make HTTPS requests with redirect and compression support
+function httpsRequest(url, options = {}, redirectCount = 0) {
+  const maxRedirects = 5;
+
   return new Promise((resolve, reject) => {
     const req = https.request(url, options, (res) => {
+      // Handle redirects
+      if (
+        res.statusCode >= 300 &&
+        res.statusCode < 400 &&
+        res.headers.location
+      ) {
+        if (redirectCount >= maxRedirects) {
+          reject(new Error(`Too many redirects (${maxRedirects})`));
+          return;
+        }
+
+        // Follow redirect
+        const redirectUrl = res.headers.location;
+        console.log(`  → Following redirect to: ${redirectUrl}`);
+
+        // Recursively follow redirect
+        httpsRequest(redirectUrl, options, redirectCount + 1)
+          .then(resolve)
+          .catch(reject);
+        return;
+      }
+
+      // Handle compression
+      let stream = res;
+      const encoding = res.headers["content-encoding"];
+
+      if (encoding === "gzip") {
+        stream = res.pipe(zlib.createGunzip());
+      } else if (encoding === "deflate") {
+        stream = res.pipe(zlib.createInflate());
+      } else if (encoding === "br") {
+        stream = res.pipe(zlib.createBrotliDecompress());
+      }
+
       let data = "";
-      res.on("data", (chunk) => (data += chunk));
-      res.on("end", () => {
+      stream.on("data", (chunk) => (data += chunk));
+      stream.on("end", () => {
         try {
-          resolve({ statusCode: res.statusCode, data: JSON.parse(data) });
+          resolve({
+            statusCode: res.statusCode,
+            data: JSON.parse(data),
+            headers: res.headers,
+          });
         } catch (e) {
-          resolve({ statusCode: res.statusCode, data });
+          resolve({ statusCode: res.statusCode, data, headers: res.headers });
         }
       });
+      stream.on("error", reject);
     });
     req.on("error", reject);
     if (options.body) {
@@ -170,52 +212,60 @@ async function fetchAmazonMusicEpisodes() {
 
   try {
     const url = `https://music.amazon.co.jp/podcasts/${AMAZON_MUSIC_SHOW_ID}`;
+    console.log(`  Initial URL: ${url}`);
+    console.log(
+      `  Note: Amazon Music requires browser-like behavior and authentication.`,
+    );
+    console.log(
+      `  The redirect following works, but content is loaded dynamically.`,
+    );
+
     const response = await httpsRequest(url, {
       headers: {
         "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         Accept:
-          "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "ja,en-US;q=0.7,en;q=0.3",
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "ja,en-US;q=0.9,en;q=0.8",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
       },
     });
 
     if (response.statusCode !== 200) {
       console.log(
-        "⚠️  Could not fetch Amazon Music page. This is expected as Amazon Music requires authentication.",
+        "⚠️  Could not fetch Amazon Music page (status: " +
+          response.statusCode +
+          ").",
+      );
+      console.log(
+        "   This is expected as Amazon Music often requires authentication.",
       );
       console.log("   Amazon Music episode links need to be added manually.");
       return [];
     }
 
     const html = response.data;
-    const episodes = [];
 
-    // Try to extract episode data from the HTML
-    // Amazon Music uses JSON-LD structured data
-    const jsonLdMatch = html.match(
-      /<script type="application\/ld\+json">(.*?)<\/script>/gs,
+    // Amazon Music uses a single-page application that loads content dynamically
+    // The initial HTML doesn't contain episode data - it's loaded via JavaScript/API calls
+    console.log(
+      "⚠️  Amazon Music uses dynamic content loading (SPA). Episode data is not in initial HTML.",
     );
+    console.log(
+      "   Fetching episode data would require browser automation or additional API calls.",
+    );
+    console.log("   Amazon Music episode links should be added manually.");
 
-    if (jsonLdMatch) {
-      for (const match of jsonLdMatch) {
-        try {
-          const jsonStr = match
-            .replace(/<script[^>]*>/, "")
-            .replace(/<\/script>/, "");
-          const data = JSON.parse(jsonStr);
+    // Note: To properly extract Amazon Music episodes, we would need to:
+    // 1. Simulate a browser environment
+    // 2. Execute JavaScript
+    // 3. Wait for dynamic content to load
+    // 4. Extract episode data from the rendered DOM
+    // This is beyond the scope of a simple Node.js script.
 
-          if (data["@type"] === "PodcastSeries" && data.episode) {
-            const episodeList = Array.isArray(data.episode)
-              ? data.episode
-              : [data.episode];
-            episodes.push(...episodeList);
-          }
-        } catch (e) {
-          // Continue if JSON parsing fails
-        }
-      }
-    }
+    return [];
 
     if (episodes.length > 0) {
       console.log(`✓ Found ${episodes.length} episodes on Amazon Music`);
