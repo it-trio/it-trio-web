@@ -138,10 +138,11 @@ async function fetchSpotifyEpisodes(accessToken) {
 
 // Apple Podcasts API functions
 async function fetchApplePodcastEpisodes() {
-  console.log("🍎 Fetching Apple Podcast episodes...");
+  console.log("🍎 Fetching Apple Podcast episodes (Japanese region)...");
 
   try {
-    const url = `https://itunes.apple.com/lookup?id=${APPLE_PODCAST_ID}&entity=podcastEpisode&limit=200`;
+    // Use country=jp to fetch from Japanese iTunes Store
+    const url = `https://itunes.apple.com/lookup?id=${APPLE_PODCAST_ID}&entity=podcastEpisode&limit=200&country=jp`;
     const response = await httpsRequest(url);
 
     if (response.statusCode !== 200) {
@@ -150,7 +151,9 @@ async function fetchApplePodcastEpisodes() {
     }
 
     const episodes = response.data.results.slice(1); // First result is the show info
-    console.log(`✓ Found ${episodes.length} episodes on Apple Podcasts`);
+    console.log(
+      `✓ Found ${episodes.length} episodes on Apple Podcasts (Japan)`,
+    );
     return episodes;
   } catch (error) {
     console.error("Error fetching Apple Podcast episodes:", error.message);
