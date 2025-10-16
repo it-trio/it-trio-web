@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "fetch": "node scripts/rss-fetch.cjs && pnpm format",
     "transcribe": "node scripts/transcribe.cjs",
-    "generate-ogp": "node scripts/generate-ogp.cjs"
+    "generate-ogp": "node scripts/generate-ogp.cjs",
+    "update-episode-links": "node scripts/update-episode-links.cjs",
+    "fetch-episode-links": "node scripts/fetch-episode-links.cjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.3",
@@ -28,6 +30,7 @@
     "openai": "^6.3.0",
     "prettier": "^3.3.3",
     "prettier-plugin-astro": "^0.14.1",
+    "puppeteer": "^24.25.0",
     "sharp": "^0.33.5"
   }
 }

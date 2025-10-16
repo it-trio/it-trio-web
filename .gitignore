@@ -18,5 +18,8 @@ pnpm-debug.log*
 .env.production
 .envrc
 
+# fetched episode links
+episode-links-fetched.json
+
 # macOS-specific files
 .DS_Store

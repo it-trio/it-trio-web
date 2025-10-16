@@ -4,26 +4,38 @@ import { SPOTIFY_SHOW_LINK, APPLE_PODCAST_SHOW_LINK, AMAZON_MUSIC_SHOW_LINK, YOU
 
 interface Props {
   hideRSS?: boolean;
+  spotifyEpisodeLink?: string;
+  applePodcastEpisodeLink?: string;
+  amazonMusicEpisodeLink?: string;
+  youtubeMusicEpisodeLink?: string;
+  youtubeEpisodeLink?: string;
 }
 
-const { hideRSS } = Astro.props;
+const { hideRSS, spotifyEpisodeLink, applePodcastEpisodeLink, amazonMusicEpisodeLink, youtubeMusicEpisodeLink, youtubeEpisodeLink } = Astro.props;
+
+// Use episode-specific links if available, otherwise fall back to channel links
+const spotifyLink = spotifyEpisodeLink || SPOTIFY_SHOW_LINK;
+const applePodcastLink = applePodcastEpisodeLink || APPLE_PODCAST_SHOW_LINK;
+const amazonMusicLink = amazonMusicEpisodeLink || AMAZON_MUSIC_SHOW_LINK;
+const youtubeMusicLink = youtubeMusicEpisodeLink || YOUTUBE_MUSIC_SHOW_LINK;
+const youtubeLink = youtubeEpisodeLink || YOUTUBE_SHOW_LINK;
 ---
 
 <div class="list">
-  <a class="item" href={SPOTIFY_SHOW_LINK} target="_blank">
+  <a class="item" href={spotifyLink} target="_blank">
     <Image class="image" src="/listen-on-spotify.png" width={660} height={160} alt="Spotifyで「ITトリオの日常」を聴く" />
   </a>
 
-  <a class="item" href={AMAZON_MUSIC_SHOW_LINK} target="_blank">
+  <a class="item" href={amazonMusicLink} target="_blank">
     <Image class="image" src="/listen-on-amazon-music.png" width={1374} height={334} alt="Amazon Music「ITトリオの日常」を聴く" />
   </a>
-  <a class="item" href={APPLE_PODCAST_SHOW_LINK} target="_blank">
+  <a class="item" href={applePodcastLink} target="_blank">
     <Image class="image" src="/listen-on-apple-podcast.svg" width={129.155} height={41} alt="Apple Podcastで「ITトリオの日常」を聴く" />
   </a>
-  <a class="item youtube" href={YOUTUBE_SHOW_LINK} target="_blank">
+  <a class="item youtube" href={youtubeLink} target="_blank">
     <Image class="image" src="/youtube.png" width={128} height={128} alt="YouTubeで「ITトリオの日常」を聴く" />
   </a>
-  <a class="item" href={YOUTUBE_MUSIC_SHOW_LINK} target="_blank">
+  <a class="item" href={youtubeMusicLink} target="_blank">
     <Image class="image" src="/listen-on-youtube-music.png" width={505} height={136} alt="YouTube Musicで「ITトリオの日常」を聴く" />
   </a>
   {

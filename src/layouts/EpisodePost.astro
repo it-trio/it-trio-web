@@ -28,7 +28,7 @@ const nextEpisodeNumber = episodes[currentEpisodeIndex - 1]?.data.number;
 const transcriptions = await getCollection("transcription");
 const transcription = transcriptions.find((t) => t.id === Astro.props.guid);
 
-const { title, description, pubDate, url, summary } = Astro.props;
+const { title, description, pubDate, url, summary, spotifyEpisodeLink, applePodcastEpisodeLink, amazonMusicEpisodeLink, youtubeMusicEpisodeLink, youtubeEpisodeLink } = Astro.props;
 const pageTitle = generatePageTitle(title);
 const pageDescription = summary;
 const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined;
@@ -141,7 +141,7 @@ const ogImagePath = episodeMeta ? episodeMeta.data.ogImagePath : undefined;
         </div>
         <h1 class="title">{title}</h1>
         <div class="listenOn">
-          <ListenOn hideRSS />
+          <ListenOn hideRSS spotifyEpisodeLink={spotifyEpisodeLink} applePodcastEpisodeLink={applePodcastEpisodeLink} amazonMusicEpisodeLink={amazonMusicEpisodeLink} youtubeMusicEpisodeLink={youtubeMusicEpisodeLink} youtubeEpisodeLink={youtubeEpisodeLink} />
         </div>
         <div class="sns">
           <hr class="border" />
