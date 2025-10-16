@@ -14,11 +14,11 @@ try {
 }
 
 /**
- * Script to automatically fetch episode links from various platforms
+ * Script to automatically fetch and update episode links from various platforms
  *
  * This script fetches episode-specific links from Spotify, Apple Podcasts, Amazon Music,
  * and YouTube using their respective APIs/web scraping. It matches episodes by title and
- * episode number.
+ * episode number, then automatically updates the episode JSON files.
  *
  * Setup:
  * 1. Create a .env file in the project root with:
@@ -205,7 +205,7 @@ async function fetchApplePodcastEpisodes() {
 
     const episodes = response.data.results.slice(1); // First result is the show info
     console.log(
-      `✓ Found ${episodes.length} episodes on Apple Podcasts (Japan)`,
+      `✓ Found ${episodes.length} episodes on Apple Podcasts (Japan)`
     );
     return episodes;
   } catch (error) {
@@ -245,7 +245,7 @@ async function fetchAmazonMusicEpisodes() {
     // Set viewport and user agent
     await page.setViewport({ width: 1280, height: 800 });
     await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     );
 
     console.log(`  Navigating to: ${url}`);
@@ -297,7 +297,7 @@ async function fetchAmazonMusicEpisodes() {
 
                   // Look for elements with substantial text
                   const textElements = current.querySelectorAll(
-                    "div, span, p, h1, h2, h3, h4",
+                    "div, span, p, h1, h2, h3, h4"
                   );
                   for (const el of textElements) {
                     const text = el.textContent?.trim();
@@ -357,7 +357,7 @@ async function fetchAmazonMusicEpisodes() {
       console.log("  First 3 episodes found:");
       episodes.slice(0, 3).forEach((ep) => {
         console.log(
-          `    - ${ep.name.substring(0, 60)}... (${ep.id.substring(0, 8)}...)`,
+          `    - ${ep.name.substring(0, 60)}... (${ep.id.substring(0, 8)}...)`
         );
       });
     }
@@ -367,7 +367,7 @@ async function fetchAmazonMusicEpisodes() {
     } else {
       console.log("⚠️  Could not extract episodes from Amazon Music.");
       console.log(
-        "   The page might require authentication or have a different structure.",
+        "   The page might require authentication or have a different structure."
       );
     }
 
@@ -376,7 +376,7 @@ async function fetchAmazonMusicEpisodes() {
     console.log("⚠️  Error fetching Amazon Music episodes:", error.message);
     if (error.message.includes("timeout")) {
       console.log(
-        "   Page loading timed out. Amazon Music might require authentication.",
+        "   Page loading timed out. Amazon Music might require authentication."
       );
     }
     return [];
@@ -602,7 +602,7 @@ async function fetchLinksForEpisodes(episodeNumbers = null) {
   }
 
   console.log(
-    `\n📊 Summary: Matched ${matchedCount} out of ${episodes.length} episodes\n`,
+    `\n📊 Summary: Matched ${matchedCount} out of ${episodes.length} episodes\n`
   );
 
   // Save results to file
@@ -610,14 +610,82 @@ async function fetchLinksForEpisodes(episodeNumbers = null) {
     const outputPath = path.join(__dirname, "../episode-links-fetched.json");
     fs.writeFileSync(outputPath, JSON.stringify(results, null, 2));
     console.log(`💾 Saved results to: episode-links-fetched.json`);
-    console.log(
-      `\nTo apply these links, run:\n  pnpm update-episode-links episode-links-fetched.json\n`,
-    );
+
+    // Automatically update episode files with fetched links
+    console.log("\n📝 Updating episode files...\n");
+    updateEpisodeFiles(results);
   } else {
     console.log(
-      "⚠️  No matches found. Check your API credentials and try again.\n",
+      "⚠️  No matches found. Check your API credentials and try again.\n"
     );
   }
+}
+
+// Update episode files with fetched links
+function updateEpisodeFiles(linksData) {
+  const files = fs.readdirSync(episodeDir);
+  let updatedCount = 0;
+  let skippedCount = 0;
+
+  files.forEach((file) => {
+    if (!file.endsWith(".json")) {
+      return;
+    }
+
+    const filePath = path.join(episodeDir, file);
+    const guid = file.replace(".json", "");
+
+    // Skip if no links for this episode
+    if (!linksData[guid]) {
+      return;
+    }
+
+    try {
+      const content = fs.readFileSync(filePath, "utf8");
+      const episode = JSON.parse(content);
+      const episodeLinks = linksData[guid];
+
+      let updated = false;
+
+      // Update episode links
+      if (episodeLinks.spotifyEpisodeLink) {
+        episode.spotifyEpisodeLink = episodeLinks.spotifyEpisodeLink;
+        updated = true;
+      }
+      if (episodeLinks.applePodcastEpisodeLink) {
+        episode.applePodcastEpisodeLink = episodeLinks.applePodcastEpisodeLink;
+        updated = true;
+      }
+      if (episodeLinks.amazonMusicEpisodeLink) {
+        episode.amazonMusicEpisodeLink = episodeLinks.amazonMusicEpisodeLink;
+        updated = true;
+      }
+      if (episodeLinks.youtubeMusicEpisodeLink) {
+        episode.youtubeMusicEpisodeLink = episodeLinks.youtubeMusicEpisodeLink;
+        updated = true;
+      }
+      if (episodeLinks.youtubeEpisodeLink) {
+        episode.youtubeEpisodeLink = episodeLinks.youtubeEpisodeLink;
+        updated = true;
+      }
+
+      if (updated) {
+        fs.writeFileSync(filePath, JSON.stringify(episode, null, 2) + "\n");
+        console.log(
+          `✓ Updated: Episode ${episode.number} (${guid.substring(0, 8)}...)`
+        );
+        updatedCount++;
+      } else {
+        skippedCount++;
+      }
+    } catch (err) {
+      console.error(`✗ Error processing ${file}:`, err.message);
+    }
+  });
+
+  console.log("\n📊 Update Summary:");
+  console.log(`  Updated: ${updatedCount} episodes`);
+  console.log(`  Skipped: ${skippedCount} episodes\n`);
 }
 
 // Parse command line arguments
@@ -628,7 +696,8 @@ function parseArgs() {
     console.log(`
 Usage: node scripts/fetch-episode-links.cjs [OPTIONS] [EPISODE_NUMBERS]
 
-Automatically fetch episode links from Spotify, Apple Podcasts, Amazon Music, and YouTube.
+Automatically fetch and update episode links from Spotify, Apple Podcasts, Amazon Music, and YouTube.
+Episode JSON files are automatically updated with the fetched links.
 
 Options:
   --all               Fetch links for all episodes
