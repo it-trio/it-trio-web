@@ -40,7 +40,7 @@ function checkOGPExists(episodeNumber) {
   const ogpPath = path.join(
     __dirname,
     "../public/episode/ogp",
-    `${episodeNumber}.png`,
+    `${episodeNumber}.png`
   );
   return fs.existsSync(ogpPath);
 }
@@ -52,7 +52,7 @@ function checkEpisodeMetaExists(guid) {
   const metaPath = path.join(
     __dirname,
     "../src/content/episodeMeta",
-    `${guid}.json`,
+    `${guid}.json`
   );
   return fs.existsSync(metaPath);
 }
@@ -62,7 +62,7 @@ function checkEpisodeMetaExists(guid) {
  */
 async function generateOGPImage(episode) {
   console.log(
-    `Generating OGP image for episode ${episode.number}: ${episode.title}`,
+    `Generating OGP image for episode ${episode.number}: ${episode.title}`
   );
 
   // Load the base template
@@ -75,34 +75,42 @@ async function generateOGPImage(episode) {
 
   // Function to wrap text
   function wrapText(text, maxWidth, fontSize) {
-    const words = text.split("");
-    const lines = [];
-    let currentLine = "";
+    // First split by newlines to handle multiple topics
+    const topicLines = text.split("\n");
+    const allLines = [];
 
-    for (let i = 0; i < words.length; i++) {
-      const testLine = currentLine + words[i];
-      // Rough estimation: each character is about fontSize * 0.6 wide
-      const testWidth = testLine.length * fontSize * 0.6;
+    for (const topicLine of topicLines) {
+      const words = topicLine.split("");
+      let currentLine = "";
 
-      if (testWidth > maxWidth && currentLine !== "") {
-        lines.push(currentLine);
-        currentLine = words[i];
-      } else {
-        currentLine = testLine;
+      for (let i = 0; i < words.length; i++) {
+        const testLine = currentLine + words[i];
+        // Rough estimation: each character is about fontSize * 0.6 wide
+        const testWidth = testLine.length * fontSize * 0.6;
+
+        if (testWidth > maxWidth && currentLine !== "") {
+          allLines.push(currentLine);
+          currentLine = words[i];
+        } else {
+          currentLine = testLine;
+        }
+      }
+
+      if (currentLine) {
+        allLines.push(currentLine);
       }
     }
 
-    if (currentLine) {
-      lines.push(currentLine);
-    }
-
-    return lines;
+    return allLines;
   }
+
+  // Process episode title: replace "/" with newlines for multiple topics
+  const processedTitle = episode.title.replace(/\//g, "\n");
 
   // Wrap the episode title
   const maxTextWidth = 550; // Set text area to exactly 550px width
   const fontSize = 47; // 43 * 1.1 = 47.3, rounded to 47
-  const wrappedLines = wrapText(episode.title, maxTextWidth, fontSize);
+  const wrappedLines = wrapText(processedTitle, maxTextWidth, fontSize);
 
   // Create SVG text overlay with wrapped text
   const textElements = wrappedLines
@@ -211,7 +219,7 @@ function createEpisodeMeta(guid, episodeNumber) {
     // Check if OGP already exists
     if (checkOGPExists(episodeNumber)) {
       console.log(
-        `OGP image for episode ${episodeNumber} already exists, skipping...`,
+        `OGP image for episode ${episodeNumber} already exists, skipping...`
       );
       process.exit(0);
     }
@@ -219,7 +227,7 @@ function createEpisodeMeta(guid, episodeNumber) {
     // Check if episode metadata already exists
     if (checkEpisodeMetaExists(episode.guid)) {
       console.log(
-        `Episode metadata for ${episode.guid} already exists, skipping...`,
+        `Episode metadata for ${episode.guid} already exists, skipping...`
       );
       process.exit(0);
     }
