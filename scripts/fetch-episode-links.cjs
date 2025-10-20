@@ -205,7 +205,7 @@ async function fetchApplePodcastEpisodes() {
 
     const episodes = response.data.results.slice(1); // First result is the show info
     console.log(
-      `✓ Found ${episodes.length} episodes on Apple Podcasts (Japan)`
+      `✓ Found ${episodes.length} episodes on Apple Podcasts (Japan)`,
     );
     return episodes;
   } catch (error) {
@@ -245,7 +245,7 @@ async function fetchAmazonMusicEpisodes() {
     // Set viewport and user agent
     await page.setViewport({ width: 1280, height: 800 });
     await page.setUserAgent(
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
     );
 
     console.log(`  Navigating to: ${url}`);
@@ -297,7 +297,7 @@ async function fetchAmazonMusicEpisodes() {
 
                   // Look for elements with substantial text
                   const textElements = current.querySelectorAll(
-                    "div, span, p, h1, h2, h3, h4"
+                    "div, span, p, h1, h2, h3, h4",
                   );
                   for (const el of textElements) {
                     const text = el.textContent?.trim();
@@ -357,7 +357,7 @@ async function fetchAmazonMusicEpisodes() {
       console.log("  First 3 episodes found:");
       episodes.slice(0, 3).forEach((ep) => {
         console.log(
-          `    - ${ep.name.substring(0, 60)}... (${ep.id.substring(0, 8)}...)`
+          `    - ${ep.name.substring(0, 60)}... (${ep.id.substring(0, 8)}...)`,
         );
       });
     }
@@ -367,7 +367,7 @@ async function fetchAmazonMusicEpisodes() {
     } else {
       console.log("⚠️  Could not extract episodes from Amazon Music.");
       console.log(
-        "   The page might require authentication or have a different structure."
+        "   The page might require authentication or have a different structure.",
       );
     }
 
@@ -376,7 +376,7 @@ async function fetchAmazonMusicEpisodes() {
     console.log("⚠️  Error fetching Amazon Music episodes:", error.message);
     if (error.message.includes("timeout")) {
       console.log(
-        "   Page loading timed out. Amazon Music might require authentication."
+        "   Page loading timed out. Amazon Music might require authentication.",
       );
     }
     return [];
@@ -602,7 +602,7 @@ async function fetchLinksForEpisodes(episodeNumbers = null) {
   }
 
   console.log(
-    `\n📊 Summary: Matched ${matchedCount} out of ${episodes.length} episodes\n`
+    `\n📊 Summary: Matched ${matchedCount} out of ${episodes.length} episodes\n`,
   );
 
   // Save results to file
@@ -616,7 +616,7 @@ async function fetchLinksForEpisodes(episodeNumbers = null) {
     updateEpisodeFiles(results);
   } else {
     console.log(
-      "⚠️  No matches found. Check your API credentials and try again.\n"
+      "⚠️  No matches found. Check your API credentials and try again.\n",
     );
   }
 }
@@ -672,7 +672,7 @@ function updateEpisodeFiles(linksData) {
       if (updated) {
         fs.writeFileSync(filePath, JSON.stringify(episode, null, 2) + "\n");
         console.log(
-          `✓ Updated: Episode ${episode.number} (${guid.substring(0, 8)}...)`
+          `✓ Updated: Episode ${episode.number} (${guid.substring(0, 8)}...)`,
         );
         updatedCount++;
       } else {
