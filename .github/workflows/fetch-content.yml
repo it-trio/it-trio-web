@@ -37,8 +37,46 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y fonts-noto-cjk fonts-noto-cjk-extra
 
+      - name: Store current episodes before fetch
+        run: |
+          # Store list of current episode GUIDs
+          mkdir -p .tmp
+          find src/content/episode -name "*.json" -exec basename {} .json \; | sort > .tmp/episodes_before.txt || touch .tmp/episodes_before.txt
+
       - name: Make changes to pull request
         run: pnpm run fetch
+
+      - name: Detect new episodes and transcribe
+        env:
+          ASSEMBLYAI_API_KEY: ${{ secrets.ASSEMBLYAI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          # Get list of episodes after fetch
+          find src/content/episode -name "*.json" -exec basename {} .json \; | sort > .tmp/episodes_after.txt
+          
+          # Find new episodes (in after but not in before)
+          comm -13 .tmp/episodes_before.txt .tmp/episodes_after.txt > .tmp/new_episodes.txt
+          
+          # Transcribe each new episode
+          if [ -s .tmp/new_episodes.txt ]; then
+            echo "Found new episodes. Starting transcription..."
+            while IFS= read -r guid; do
+              # Extract episode number from the GUID-named file
+              episode_file="src/content/episode/${guid}.json"
+              if [ -f "$episode_file" ]; then
+                episode_number=$(node -p "JSON.parse(require('fs').readFileSync('$episode_file', 'utf8')).number")
+                echo "Transcribing episode ${episode_number} (GUID: ${guid})..."
+                
+                # Run transcription
+                pnpm run transcribe ${episode_number} || echo "Warning: Transcription failed for episode ${episode_number}"
+              fi
+            done < .tmp/new_episodes.txt
+            
+            # Format the transcription files
+            pnpm format
+          else
+            echo "No new episodes found. Skipping transcription."
+          fi
 
       - name: Generate OGP images for new episodes
         run: |
@@ -74,6 +112,16 @@ jobs:
           delete-branch: true
           title: "Auto Update from GitHub Actions"
           body: |
-            This is an automatic pull request changes is based on the latest content.
+            This is an automatic pull request with the latest content updates.
+            
+            Changes may include:
+            - New episode metadata
+            - OGP images for new episodes
+            - Automatic transcriptions for new episodes (with speaker identification and timestamps)
+            
+            If speaker names need to be updated in transcriptions, comment on this PR with:
+            ```
+            speaker おぐらくん ちーず なべちゃん
+            ```
           labels: BOT
           draft: false
