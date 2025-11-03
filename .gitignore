@@ -24,4 +24,4 @@ episode-links-fetched.json
 # macOS-specific files
 .DS_Store
 
-.tmp/
+.tmp
