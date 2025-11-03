@@ -53,10 +53,10 @@ jobs:
         run: |
           # Get list of episodes after fetch
           find src/content/episode -name "*.json" -exec basename {} .json \; | sort > .tmp/episodes_after.txt
-          
+
           # Find new episodes (in after but not in before)
           comm -13 .tmp/episodes_before.txt .tmp/episodes_after.txt > .tmp/new_episodes.txt
-          
+
           # Transcribe each new episode
           if [ -s .tmp/new_episodes.txt ]; then
             echo "Found new episodes. Starting transcription..."
@@ -113,12 +113,12 @@ jobs:
           title: "Auto Update from GitHub Actions"
           body: |
             This is an automatic pull request with the latest content updates.
-            
+
             Changes may include:
             - New episode metadata
             - OGP images for new episodes
             - Automatic transcriptions for new episodes (with speaker identification and timestamps)
-            
+
             If speaker names need to be updated in transcriptions, comment on this PR with:
             ```
             speaker おぐらくん ちーず なべちゃん
