@@ -2,12 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const OpenAI = require("openai");
 
-// API keys should be set as environment variables
-const ASSEMBLYAI_API_KEY = process.env.ASSEMBLYAI_API_KEY;
+const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-if (!ASSEMBLYAI_API_KEY) {
-  console.error("Error: ASSEMBLYAI_API_KEY environment variable is not set");
+if (!ELEVENLABS_API_KEY) {
+  console.error("Error: ELEVENLABS_API_KEY environment variable is not set");
   process.exit(1);
 }
 
@@ -16,12 +15,10 @@ if (!OPENAI_API_KEY) {
   process.exit(1);
 }
 
-// Initialize OpenAI client
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
 });
 
-// Get episode number from command line arguments
 const episodeNumber = process.argv[2];
 
 if (!episodeNumber) {
@@ -53,116 +50,101 @@ function findEpisodeByNumber(number) {
 }
 
 /**
- * Upload audio file to AssemblyAI
+ * Transcribe audio using ElevenLabs scribe_v2 model
  */
-async function uploadAudio(audioUrl) {
+async function transcribeAudio(audioUrl) {
   console.log("Downloading audio from:", audioUrl);
 
-  // First, download the audio file
   const audioResponse = await fetch(audioUrl);
   if (!audioResponse.ok) {
     throw new Error(`Failed to download audio: ${audioResponse.statusText}`);
   }
 
-  const audioData = await audioResponse.arrayBuffer();
+  const audioBuffer = Buffer.from(await audioResponse.arrayBuffer());
+  console.log(
+    `Audio downloaded (${(audioBuffer.length / 1024 / 1024).toFixed(1)} MB)`,
+  );
 
-  // Upload to AssemblyAI
-  console.log("Uploading audio to AssemblyAI...");
-  const uploadResponse = await fetch("https://api.assemblyai.com/v2/upload", {
+  console.log("Submitting transcription to ElevenLabs (scribe_v2)...");
+
+  const formData = new FormData();
+  formData.append("model_id", "scribe_v2");
+  formData.append(
+    "file",
+    new Blob([audioBuffer], { type: "audio/mpeg" }),
+    "audio.mp3",
+  );
+  formData.append("language_code", "ja");
+  formData.append("diarize", "true");
+  formData.append("timestamps_granularity", "word");
+  formData.append("tag_audio_events", "false");
+
+  const response = await fetch("https://api.elevenlabs.io/v1/speech-to-text", {
     method: "POST",
     headers: {
-      authorization: ASSEMBLYAI_API_KEY,
+      "xi-api-key": ELEVENLABS_API_KEY,
     },
-    body: audioData,
-  });
-
-  if (!uploadResponse.ok) {
-    throw new Error(`Failed to upload audio: ${uploadResponse.statusText}`);
-  }
-
-  const { upload_url } = await uploadResponse.json();
-  console.log("Audio uploaded successfully");
-  return upload_url;
-}
-
-/**
- * Submit transcription request to AssemblyAI
- */
-async function submitTranscription(audioUrl) {
-  console.log("Submitting transcription request...");
-
-  const response = await fetch("https://api.assemblyai.com/v2/transcript", {
-    method: "POST",
-    headers: {
-      authorization: ASSEMBLYAI_API_KEY,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      audio_url: audioUrl,
-      speaker_labels: true, // Enable speaker diarization
-      language_code: "ja", // Japanese language
-    }),
+    body: formData,
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to submit transcription: ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(
+      `ElevenLabs API error (${response.status}): ${errorText}`,
+    );
   }
 
   const data = await response.json();
-  return data.id;
+  console.log("Transcription completed!");
+  return data;
 }
 
 /**
- * Wait for transcription to complete
+ * Group word-level results into speaker segments.
+ * ElevenLabs returns individual words with speaker_id; this groups
+ * consecutive words from the same speaker into a single segment.
  */
-async function waitForTranscription(transcriptId) {
-  console.log("Waiting for transcription to complete...");
+function groupWordsIntoSegments(words) {
+  const segments = [];
+  let current = null;
 
-  const maxAttempts = 20;
-  const pollingInterval = 30000; // 30 seconds
+  for (const word of words) {
+    if (word.type !== "word") continue;
 
-  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-    console.log(
-      `Checking transcription status (attempt ${attempt}/${maxAttempts})...`,
-    );
+    const speakerId = word.speaker_id || "speaker_0";
 
-    const response = await fetch(
-      `https://api.assemblyai.com/v2/transcript/${transcriptId}`,
-      {
-        headers: {
-          authorization: ASSEMBLYAI_API_KEY,
-        },
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        `Failed to get transcription status: ${response.statusText}`,
-      );
-    }
-
-    const data = await response.json();
-
-    if (data.status === "completed") {
-      console.log("Transcription completed!");
-      return data;
-    } else if (data.status === "error") {
-      throw new Error(`Transcription failed: ${data.error}`);
-    }
-
-    // If not the last attempt, wait before trying again
-    if (attempt < maxAttempts) {
-      console.log(
-        `Status: ${data.status}, waiting ${pollingInterval / 1000} seconds...`,
-      );
-      await new Promise((resolve) => setTimeout(resolve, pollingInterval));
+    if (!current || current.speakerId !== speakerId) {
+      if (current) {
+        segments.push(current);
+      }
+      current = {
+        speakerId,
+        text: word.text,
+        startSec: word.start,
+        endSec: word.end,
+      };
+    } else {
+      current.text += word.text;
+      current.endSec = word.end;
     }
   }
 
-  // If we've exhausted all attempts without completion
-  throw new Error(
-    `Transcription did not complete after ${maxAttempts} attempts. Please check the transcription status manually using the transcript ID: ${transcriptId}`,
-  );
+  if (current) {
+    segments.push(current);
+  }
+
+  return segments;
+}
+
+/**
+ * Map ElevenLabs speaker_id ("speaker_0") to letter label ("A").
+ */
+function mapSpeakerLabel(speakerId) {
+  const match = speakerId.match(/speaker_(\d+)/);
+  if (match) {
+    return String.fromCharCode(65 + parseInt(match[1]));
+  }
+  return speakerId;
 }
 
 /**
@@ -197,36 +179,37 @@ Return ONLY the cleaned text without any explanations or additional commentary.`
     return response.choices[0].message.content.trim();
   } catch (error) {
     console.warn(`Warning: Failed to cleanup text segment: ${error.message}`);
-    return text; // Return original text if cleanup fails
+    return text;
   }
 }
 
 /**
- * Process a batch of utterances in parallel
+ * Process a batch of segments in parallel
  */
-async function processBatch(utterances, batchIndex, totalBatches) {
+async function processBatch(segments, batchIndex, totalBatches) {
   console.log(
-    `Processing batch ${batchIndex + 1}/${totalBatches} (${utterances.length} segments)...`,
+    `Processing batch ${batchIndex + 1}/${totalBatches} (${segments.length} segments)...`,
   );
 
-  const promises = utterances.map(async (utterance, index) => {
-    // Convert milliseconds to timestamp format (HH:MM:SS)
-    const totalSeconds = Math.floor(utterance.start / 1000);
+  const promises = segments.map(async (segment) => {
+    const startMs = Math.round(segment.startSec * 1000);
+    const endMs = Math.round(segment.endSec * 1000);
+
+    const totalSeconds = Math.floor(segment.startSec);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
     const timestamp = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 
-    // Clean up the text using OpenAI
-    const cleanedText = await cleanupJapaneseText(utterance.text);
+    const cleanedText = await cleanupJapaneseText(segment.text);
 
     return {
-      speaker: utterance.speaker,
+      speaker: mapSpeakerLabel(segment.speakerId),
       text: cleanedText,
       timestamp: timestamp,
-      start: utterance.start,
-      end: utterance.end,
+      start: startMs,
+      end: endMs,
     };
   });
 
@@ -237,19 +220,19 @@ async function processBatch(utterances, batchIndex, totalBatches) {
  * Format transcription data with parallel processing
  */
 async function formatTranscription(transcriptionData) {
-  const utterances = transcriptionData.utterances || [];
+  const words = transcriptionData.words || [];
+  const rawSegments = groupWordsIntoSegments(words);
   const segments = [];
 
-  // Process in batches of 4 concurrent requests
   const batchSize = 5;
-  const totalBatches = Math.ceil(utterances.length / batchSize);
+  const totalBatches = Math.ceil(rawSegments.length / batchSize);
 
   console.log(
-    `Processing ${utterances.length} segments in ${totalBatches} batches of ${batchSize} concurrent requests...`,
+    `Processing ${rawSegments.length} segments in ${totalBatches} batches of ${batchSize} concurrent requests...`,
   );
 
-  for (let i = 0; i < utterances.length; i += batchSize) {
-    const batch = utterances.slice(i, i + batchSize);
+  for (let i = 0; i < rawSegments.length; i += batchSize) {
+    const batch = rawSegments.slice(i, i + batchSize);
     const batchIndex = Math.floor(i / batchSize);
 
     const batchResults = await processBatch(batch, batchIndex, totalBatches);
@@ -271,7 +254,6 @@ function saveTranscription(episodeGuid, transcriptionData) {
     "../src/content/transcription",
   );
 
-  // Create directory if it doesn't exist
   if (!fs.existsSync(transcriptionsDir)) {
     fs.mkdirSync(transcriptionsDir, { recursive: true });
   }
@@ -289,7 +271,6 @@ function saveTranscription(episodeGuid, transcriptionData) {
   try {
     console.log(`Starting transcription for episode ${episodeNumber}`);
 
-    // Find the episode
     const episode = findEpisodeByNumber(episodeNumber);
     if (!episode) {
       console.error(`Error: Episode ${episodeNumber} not found`);
@@ -299,17 +280,8 @@ function saveTranscription(episodeGuid, transcriptionData) {
     console.log(`Found episode: ${episode.title}`);
     console.log(`Audio URL: ${episode.url}`);
 
-    // Upload audio
-    const uploadUrl = await uploadAudio(episode.url);
+    const transcriptionData = await transcribeAudio(episode.url);
 
-    // Submit transcription request
-    const transcriptId = await submitTranscription(uploadUrl);
-    console.log(`Transcription ID: ${transcriptId}`);
-
-    // Wait for transcription to complete
-    const transcriptionData = await waitForTranscription(transcriptId);
-
-    // Format and save transcription
     const formattedData = await formatTranscription(transcriptionData);
     saveTranscription(episode.guid, formattedData);
 
