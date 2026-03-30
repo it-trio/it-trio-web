@@ -22,20 +22,20 @@
 
 ## 使用しているサービス
 
-文字起こしには [AssemblyAI](https://www.assemblyai.com/) を使用しています。AssemblyAIは以下の理由で選ばれました：
+文字起こしには [ElevenLabs](https://elevenlabs.io/) の Speech to Text API（scribe_v2 モデル）を使用しています。ElevenLabsは以下の理由で選ばれました：
 
-- 高品質な話者識別（Speaker Diarization）
-- 日本語対応
-- 品質と価格のバランスが良い
-- シンプルなAPI
+- 高品質な話者識別（Speaker Diarization、最大32話者）
+- 日本語対応（90+言語対応）
+- 高精度なワードレベルタイムスタンプ
+- シンプルな同期API（ポーリング不要）
 
 ## セットアップ
 
-### 1. AssemblyAI APIキーの取得
+### 1. ElevenLabs APIキーの取得
 
-1. [AssemblyAI](https://www.assemblyai.com/) にアクセス
+1. [ElevenLabs](https://elevenlabs.io/) にアクセス
 2. アカウントを作成
-3. ダッシュボードからAPIキーを取得
+3. Profile Settings からAPIキーを取得
 
 ### 2. OpenAI APIキーの取得
 
@@ -48,7 +48,7 @@
 
 1. GitHubリポジトリの Settings > Secrets and variables > Actions に移動
 2. 以下のシークレットを追加：
-   - `ASSEMBLYAI_API_KEY`: AssemblyAIのAPIキー
+   - `ELEVENLABS_API_KEY`: ElevenLabsのAPIキー
    - `OPENAI_API_KEY`: OpenAIのAPIキー
 
 ## 使い方
@@ -78,7 +78,7 @@
 
 ```bash
 # 環境変数を設定
-export ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here
+export ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
 export OPENAI_API_KEY=your_openai_api_key_here
 
 # スクリプトを実行
@@ -88,7 +88,7 @@ pnpm run transcribe 18
 または直接：
 
 ```bash
-ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here OPENAI_API_KEY=your_openai_api_key_here node scripts/transcribe.cjs 18
+ELEVENLABS_API_KEY=your_elevenlabs_api_key_here OPENAI_API_KEY=your_openai_api_key_here node scripts/transcribe.cjs 18
 ```
 
 ## ファイル構造
@@ -110,7 +110,7 @@ ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here OPENAI_API_KEY=your_openai_api_k
 {
   "segments": [
     {
-      "speaker": "Speaker A",
+      "speaker": "A",
       "text": "こんにちは！",
       "timestamp": "00:00:05",
       "start": 5000,
@@ -139,6 +139,7 @@ ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here OPENAI_API_KEY=your_openai_api_k
 1. APIキーが正しく設定されているか確認
 2. エピソード番号が正しいか確認
 3. 音声ファイルURLにアクセスできるか確認
+4. ElevenLabsのファイルサイズ制限（3GB）を超えていないか確認
 
 ### 文字起こしが表示されない場合
 
@@ -148,7 +149,7 @@ ASSEMBLYAI_API_KEY=your_assemblyai_api_key_here OPENAI_API_KEY=your_openai_api_k
 
 ## コスト
 
-AssemblyAIの料金は音声の長さに基づきます。最新の料金情報は[AssemblyAIの料金ページ](https://www.assemblyai.com/pricing)を確認してください。
+ElevenLabsの料金は音声の長さに基づきます。最新の料金情報は[ElevenLabsの料金ページ](https://elevenlabs.io/pricing/api)を確認してください。
 
 ## 話者名の変更
 
