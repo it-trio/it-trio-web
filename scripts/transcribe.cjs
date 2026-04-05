@@ -89,9 +89,7 @@ async function transcribeAudio(audioUrl) {
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(
-      `ElevenLabs API error (${response.status}): ${errorText}`,
-    );
+    throw new Error(`ElevenLabs API error (${response.status}): ${errorText}`);
   }
 
   const data = await response.json();
