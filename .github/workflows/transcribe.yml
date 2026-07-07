@@ -17,11 +17,8 @@ jobs:
         with:
           token: ${{ secrets.IT_TRIO_WEB_ACTIONS_TOKEN }}
 
-      # withastro/action@v1と同じ設定にしてキャッシュを共有する
       - name: Setup PNPM
-        uses: pnpm/action-setup@v2
-        with:
-          version: "latest"
+        uses: pnpm/action-setup@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
